@@ -1,0 +1,1 @@
+In each folder, there is a .tex file that read the data in the six folders in its same directory. Each folder is a different experiment taken from the collection of experiments in the folders 'experiments_rand_int' and 'experiments_non_rand_int'. Then, in each .tex file you can select the id's of the experiments whose data is wanted to be shown
