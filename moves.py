@@ -1,6 +1,7 @@
 import numpy as np
 import sdp_solvers as solvers
 import clustering_utils as cu
+import data_visualization_tools as dv
 
 
 def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_it=100, use_IPM=False):
@@ -50,9 +51,13 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
                         new_lb = aexp_bshrk_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
 
                     ene = cu.energy_clustering(C, new_lb)
-                    if ene > max_ene:
+                    if ene >= max_ene:
                         max_ene = ene
                         lb = new_lb
+
+                    # Comment TODO
+                    if move_type == "ae":
+                        break
         it += 1
         err = np.linalg.norm(lb - lb_prev)
 
@@ -186,6 +191,8 @@ def solve_round_sdp(C, use_IPM=False):
         X, _, _ = solvers.maxcut_ipm_solver(C)
     else:
         X, _, _, _ = solvers.maxkcut_admm_solver(C, 2)
+
+    # dv.plot_matrix(X)
 
     # Embedding --------------------------------------------------------------------------------------------------------
     V = np.linalg.cholesky(X + 1e-9 * np.trace(X) * np.eye(X.shape[0])) 

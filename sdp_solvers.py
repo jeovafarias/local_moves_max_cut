@@ -12,7 +12,7 @@ def maxcut_ipm_solver(C):
     Solve the Max-Cut SDP problem with Interior Point Method
 
     :param C: (2d array[float], NxN) - Weight Matrix representd the graph to be partitioned
-    :return: (1d array[integer]) - Partition,
+    :return: (2d array[float], NxN) - SDP solution,
              (1d array[integer]) - Final objective value,
              (float) - Final elapsed time
 
@@ -129,15 +129,63 @@ def graph_sampling(C, w, delta):
 # ADMM METHODS & UTILS =================================================================================================
 def maxkcut_admm_solver(C, K, num_max_it=5000, epsilon=1e-8, alpha=0):
     """
-    TODO
+    Solve Max-K-Hypercut SDP problem with Alternate Direction Multipliers Method
 
-    :param C:
-    :param K:
-    :param num_max_it:
-    :param epsilon:
-    :param alpha:
-    :return:
+    :param C: (2d array[float], NxN) - Weight Matrix represents the graph to be partitioned
+    :param K: (integer) - Number of partitions
+    :param num_max_it: (integer) - Maximum Number of ADMM iterations
+    :param epsilon: (float) - Desired final error
+    :param alpha: (float) - Dimensionality of the low-rank eigenvalue problem (alpha=0 for full rank)
+    :return: (2d array[float], NxN) - SDP solution,
+             (float) - Final error,
+             (float) - Final elapsed time
+             (integer) - Total number of iterations
     """
+
+    def finish_iteration(X_f, X_i, y, nu, C, b, d, it, params):
+        """
+        Function used to monitor the error in each ADMM iteration
+        """
+        # Primal Infeasibility -----------------------------------------------------------------------------------------
+        pinf = (np.linalg.norm(np.diag(X_f) - b) + np.linalg.norm(np.minimum(X_f - d, 0))) / (1 + np.linalg.norm(b))
+
+        # Dual Infeasibility -------------------------------------------------------------------------------------------
+        dinf = np.linalg.norm(params['mu'] * (X_f - X_i)) / (1 + np.linalg.norm(C, ord=1))
+
+        # Gap ----------------------------------------------------------------------------------------------------------
+        if np.remainder(it, params['check_finish_rate']) == 0:
+            CX = np.trace(C.dot(X_f))
+            y_nu = np.vdot(b, y) + np.vdot(d, nu)
+            gap = np.abs(CX - y_nu) / (1 + CX + y_nu)
+            params['prev_gap'] = gap
+        else:
+            gap = params['prev_gap']
+
+        # print("> pinf: %.4e" % pinf)
+        # print("> dinf: %.4e" % dinf)
+        # print("> gap: %.4e" % gap)
+        # print("> mu: %.4e" % params['mu'])
+
+        # Total error assessment ---------------------------------------------------------------------------------------
+        error = np.max(np.abs([pinf, dinf, gap]))
+        stop = error < params['epsilon']
+
+        # Update mu  ---------------------------------------------------------------------------------------------------
+        if pinf / dinf <= 1:
+            params['it_pinf'] += 1
+            params['it_dinf'] = 0
+            if params['it_pinf'] >= params['h']:
+                params['mu'] = max(params['gamma'] * params['mu'], params['mu_min'])
+                params['it_pinf'] = 0
+        else:
+            params['it_dinf'] += 1
+            params['it_pinf'] = 0
+            if params['it_dinf'] >= params['h']:
+                params['mu'] = min((1. / params['gamma']) * params['mu'], params['mu_max'])
+                params['it_dinf'] = 0
+
+        return stop, params, error
+
     params = {'mu': 5,
               'pho': 1.6,
               'mu_max': 1e4,
@@ -205,64 +253,14 @@ def maxkcut_admm_solver(C, K, num_max_it=5000, epsilon=1e-8, alpha=0):
     return X, error, elapsed_time, it
 
 
-def finish_iteration(X_f, X_i, y, nu, C, b, d, it, params):
-    """
-    TODO
-
-    :param X_f:
-    :param X_i:
-    :param y:
-    :param nu:
-    :param C:
-    :param b:
-    :param d:
-    :param it:
-    :param params:
-    :return:
-    """
-    # Primal Infeasibility ---------------------------------------------------------------------------------------------
-    pinf = (np.linalg.norm(np.diag(X_f) - b) + np.linalg.norm(np.minimum(X_f - d, 0))) / (1 + np.linalg.norm(b))
-
-    # Dual Infeasibility -----------------------------------------------------------------------------------------------
-    dinf = np.linalg.norm(params['mu'] * (X_f - X_i)) / (1 + np.linalg.norm(C, ord=1))
-
-    # Gap --------------------------------------------------------------------------------------------------------------
-    if np.remainder(it, params['check_finish_rate']) == 0:
-        CX = np.trace(C.dot(X_f))
-        y_nu = np.vdot(b, y) + np.vdot(d, nu)
-        gap = np.abs(CX - y_nu) / (1 + CX + y_nu)
-        params['prev_gap'] = gap
-    else:
-        gap = params['prev_gap']
-
-    # print("> pinf: %.4e" % pinf)
-    # print("> dinf: %.4e" % dinf)
-    # print("> gap: %.4e" % gap)
-    # print("> mu: %.4e" % params['mu'])
-
-    # Total error assessment -------------------------------------------------------------------------------------------
-    error = np.max(np.abs([pinf, dinf, gap]))
-    stop = error < params['epsilon']
-
-    # Update mu  -------------------------------------------------------------------------------------------------------
-    if pinf / dinf <= 1:
-        params['it_pinf'] += 1
-        params['it_dinf'] = 0
-        if params['it_pinf'] >= params['h']:
-            params['mu'] = max(params['gamma'] * params['mu'], params['mu_min'])
-            params['it_pinf'] = 0
-    else:
-        params['it_dinf'] += 1
-        params['it_pinf'] = 0
-        if params['it_dinf'] >= params['h']:
-            params['mu'] = min((1. / params['gamma']) * params['mu'], params['mu_max'])
-            params['it_dinf'] = 0
-
-    return stop, params, error
-
-
 # ROUNDING UTILS =======================================================================================================
 def hyper_plane_rounding(V):
+    """
+    Hyper plane rounding algorithm used in Max-Cut SDP problems
+
+    :param V: (2d array[float], NxN) - Embedded vectors (rows) in a R^{N-1} unit sphere
+    :return: (1d array[integer]) - Rounded partition
+    """
     N = V.shape[0]
     w = np.random.randn(N)
     v = V.dot(w)

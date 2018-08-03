@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 
 def plot_data(P, K, cl, set_size,
               show_data=True, save_to_file=False, file_name='foo', title='',
-              show_legend=True, normalize=False, gt=''):
+              show_legend=False, normalize=False, gt=''):
     N, dim_space = P.shape
     assert (dim_space in (2, 3))
 

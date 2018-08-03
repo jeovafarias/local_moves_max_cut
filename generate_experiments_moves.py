@@ -107,58 +107,62 @@ def run_test(n, K, sigma_2, num_trials, random_init, dir_name='test'):
         os.makedirs(dir_name)
 
     # Save data --------------------------------------------------------------------------------------------------------
-    id = 0
-    while os.path.exists(dir_name + '/' + str(id)):
-        id += 1
-    dirpath = dir_name + '/' + str(id)
+    experiment_id = 0
+    while os.path.exists(dir_name + '/' + str(experiment_id)):
+        experiment_id += 1
+    dirpath = dir_name + '/' + str(experiment_id)
     os.makedirs(dirpath)
 
-    dv.plot_data(P, K, ground_truth, 2, show_legend=True, show_data=False, save_to_file=True,
-                 file_name=dirpath + '/id_' + str(id) + '_GT',
+    dv.plot_data(P, K, ground_truth, 2, show_legend=False, show_data=False, save_to_file=True,
+                 file_name=dirpath + '/id_' + str(experiment_id) + '_GT',
                  title='Ground Truth (N = %d, K = %d)' % (n*K, K))
+    np.savetxt(str(dirpath) + '/P.dat', P)
+    np.savetxt(str(dirpath) + '/gt.dat', ground_truth, fmt='%d')
+    np.savetxt(str(dirpath) + '/lb_init.dat', lb_init)
+    np.savetxt(str(dirpath) + '/ab_sequence.dat', ab_sequence)
 
-    print("ALPHA-BETA SWAP:")
+    print("ALPHA-BETA SWAP (id %d):" % experiment_id)
     print("> Mean time: %.4f + %.4f" % (np.mean(ab_tim_t), np.std(ab_tim_t)))
     print("> Mean pur:  %.4f + %.4f" % (np.mean(ab_pur_t), np.std(ab_pur_t)))
     save_data(ab_pur_t, ab_ene_t, ab_per_t, ab_tim_t, dirpath, filename="ab_results")
 
-    print("ALPHA EXPANSION:")
+    print("ALPHA EXPANSION (id %d):" % experiment_id)
     print("> Mean time: %.4f + %.4f" % (np.mean(ae_tim_t), np.std(ae_tim_t)))
     print("> Mean pur:  %.4f + %.4f" % (np.mean(ae_pur_t), np.std(ae_pur_t)))
     save_data(ae_pur_t, ae_ene_t, ae_per_t, ae_tim_t, dirpath, filename="ae_results")
 
-    print("ALPHA EXPANSION-BETA SHRINK:")
+    print("ALPHA EXPANSION-BETA SHRINK (id %d):" % experiment_id)
     print("> Mean time: %.4f + %.4f" % (np.mean(aebs_tim_t), np.std(aebs_tim_t)))
     print("> Mean pur:  %.4f + %.4f" % (np.mean(aebs_pur_t), np.std(aebs_pur_t)))
     save_data(aebs_pur_t, aebs_ene_t, aebs_per_t, aebs_tim_t, dirpath, filename="aebs_results")
 
-    print("LOCAL SEARCH:")
+    print("LOCAL SEARCH (id %d):" % experiment_id)
     print("> Mean time: %.4f + %.4f" % (np.mean(ls_tim_t), np.std(ls_tim_t)))
     print("> Mean pur:  %.4f + %.4f" % (np.mean(ls_pur_t), np.std(ls_pur_t)))
     save_data(ls_pur_t, ls_ene_t, ls_per_t, ls_tim_t, dirpath, filename="ls_results")
 
-    print("Total time (id %d): %.4f s\n" % (id, time.time() - time_start))
+    print("Total time (id %d): %.4f s\n" % (experiment_id, time.time() - time_start))
 
 
 if __name__ == "__main__":
-    # dir_name = 'experiments_rand_int'
-    dir_name = 'experiments_non_rand_int'
+    dir_name = 'experiments_rand_int'
+    # dir_name = 'experiments_non_rand_int'
     num_trials = 10
     random_init = False
 
-    points_per_cluster = 4
-    K = 3
-    sigmas = [0.15, 0.15, 0.15]
-    for e in range(len(sigmas)):
-        print('EXP. %d - 1 =================================================================================' % (e + 1))
-        sigma_1 = 1
-        sigma_2 = sigmas[e]
-        run_test(points_per_cluster, K, sigma_2, num_trials, random_init, dir_name=dir_name)
-    print("SET FINISHED ========================================================================== \n")
+    # points_per_cluster = 10
+    # K = 3
+    # sigmas = [0.15, 0.15, 0.15]
+    # for e in range(len(sigmas)):
+    #     print('EXP. %d - 1 =================================================================================' % (e + 1))
+    #     sigma_1 = 1
+    #     sigma_2 = sigmas[e]
+    #     run_test(points_per_cluster, K, sigma_2, num_trials, random_init, dir_name=dir_name)
+    # print("SET FINISHED ========================================================================== \n")
 
-    points_per_cluster = 20
-    K = 3
-    sigmas = [0.1, 0.1, 0.1, 0.15, 0.15]
+    points_per_cluster = 8
+    K = 4
+    sigmas = [0.05, 0.1, 0.15, 0.2, 0.2]
     for e in range(len(sigmas)):
         print('EXP. %d - 2 =================================================================================' % (e + 1))
         sigma_1 = 1

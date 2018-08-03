@@ -29,7 +29,7 @@ def energy_clustering(C, lb):
     assert C.shape[0] == C.shape[1]
     ene = 0
     for i in range(C.shape[0]):
-        for j in range(C.shape[1]):
+        for j in range(C.shape[0]):
             if lb[i] != lb[j]:
                 ene += C[i, j]
     return ene
