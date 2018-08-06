@@ -1,5 +1,0 @@
-Then, in the .tex file present in this folder, you can select the id's of the 
-experiments whose data is wanted to be shown. The id's are simply the name 
-(that is a number) of each experiment folder. The selection can be made in the
-beginning of the .tex file.
- 

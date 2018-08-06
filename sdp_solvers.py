@@ -4,6 +4,22 @@ import picos as pic
 import itertools
 import time
 import clustering_utils as cu
+import itertools
+
+
+# BRUTE FORCE METHODS (TODO) ===========================================================================================
+def maxcut_brute_force_solver(C):
+    N = C.shape[0]
+    all_partitions = list(itertools.product([-1, 1], repeat=N))
+    max_ene = 0
+    best = all_partitions[0]
+    for lb in all_partitions:
+        ene = cu.energy_clustering(C, lb)
+        if ene > max_ene:
+            best = lb
+            max_ene = ene
+
+    return best
 
 
 # INTERIOR POINT METHODS & UTILS =======================================================================================
