@@ -10,9 +10,7 @@ import itertools
 # BRUTE FORCE METHODS (TODO) ===========================================================================================
 def maxcut_brute_force_solver(C):
     N = C.shape[0]
-<<<<<<< HEAD
-    lst = list(itertools.product([0, 1], repeat=N))
-=======
+    
     all_partitions = list(itertools.product([-1, 1], repeat=N))
     max_ene = 0
     best = all_partitions[0]
@@ -23,7 +21,6 @@ def maxcut_brute_force_solver(C):
             max_ene = ene
 
     return best
->>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
 
 
 # INTERIOR POINT METHODS & UTILS =======================================================================================
