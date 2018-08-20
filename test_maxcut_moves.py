@@ -13,21 +13,22 @@ if __name__ == "__main__":
     use_experiment_id = False
     if use_experiment_id:
         # Use data from experiments ------------------------------------------------------------------------------------
-        experiment_dir = 'experiments_non_rand_int'
-        experiment_id = 7
+        experiment_dir = 'experiments_rand_int'
+        experiment_id = 10
         experiment_path = experiment_dir + '/' + str(experiment_id)
         assert os.path.exists(experiment_path)
 
         P = np.loadtxt(experiment_path + "/P.dat")
         ground_truth = np.loadtxt(experiment_path + "/gt.dat", dtype='int')
         K = len(np.unique(ground_truth))
+        dv.plot_data(P, K, ground_truth, 2)
 
     else:
         # Data generation parameters -----------------------------------------------------------------------------------
         n = 1
-        K = 4
+        K = 3
         sigma_2 = .0
-        use_prev_p = 1
+        use_prev_p = 0
         shuffle_data = 0
         params_data = {'sigma_1': 1, 'sigma_2': sigma_2, 'K': K, 'dim_space': 2, 'pop_interv': [n, n],
                        'use_prev_p': use_prev_p, 'shuffle': shuffle_data}
@@ -36,7 +37,10 @@ if __name__ == "__main__":
         P, ground_truth = dg.generate_data_random(params_data)
 
     N = P.shape[0]
-    C = skl.pairwise_distances(P, metric='sqeuclidean')
+    a = 5
+    C = np.array([[0, a, a], [a, 0, 1], [a, 1, 0]])
+
+    # C = skl.pairwise_distances(P, metric='sqeuclidean')
     dv.plot_data(P, K, ground_truth, 2)
 
     # Other parameters -------------------------------------------------------------------------------------------------
@@ -69,13 +73,13 @@ if __name__ == "__main__":
     print("  - Energy Clustering: %.4f" % ene_cl)
     print("  - Percentage Energy: %.4f %%" % per_ene_cl)
 
-    lb_abbs = moves.large_move_maxcut(C, K, lb_init, move_type="ae_bs", ab_sequence=ab_sequence,
-                                      num_max_it=num_max_it, use_IPM=use_IPM)
-    pur, ene_cl, per_ene_cl = cu.stats_clustering(C, lb_abbs, ground_truth)
-    print("\n> Alpha Expansion-Beta Shrink")
-    print("  - Purity: %.4f" % pur)
-    print("  - Energy Clustering: %.4f" % ene_cl)
-    print("  - Percentage Energy: %.4f %%" % per_ene_cl)
+    # lb_abbs = moves.large_move_maxcut(C, K, lb_init, move_type="ae_bs", ab_sequence=ab_sequence,
+    #                                   num_max_it=num_max_it, use_IPM=use_IPM)
+    # pur, ene_cl, per_ene_cl = cu.stats_clustering(C, lb_abbs, ground_truth)
+    # print("\n> Alpha Expansion-Beta Shrink")
+    # print("  - Purity: %.4f" % pur)
+    # print("  - Energy Clustering: %.4f" % ene_cl)
+    # print("  - Percentage Energy: %.4f %%" % per_ene_cl)
 
     lb_ls = cu.local_search(C, K, lb_init)
     pur, ene_cl, per_ene_cl = cu.stats_clustering(C, lb_ls, ground_truth)

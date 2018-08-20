@@ -4,6 +4,13 @@ import picos as pic
 import itertools
 import time
 import clustering_utils as cu
+import itertools
+
+
+# BRUTE FORCE METHODS (TODO) ===========================================================================================
+def maxcut_brute_force_solver(C):
+    N = C.shape[0]
+    lst = list(itertools.product([0, 1], repeat=N))
 
 
 # INTERIOR POINT METHODS & UTILS =======================================================================================

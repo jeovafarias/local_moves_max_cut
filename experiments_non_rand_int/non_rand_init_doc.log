@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.7.11)  2 AUG 2018 15:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.7.11)  3 AUG 2018 11:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -551,25 +551,25 @@ Package: listings 2015/06/04 1.6 (Carsten Heinz)
 (./non_rand_init_doc.aux)
 \openout1 = `non_rand_init_doc.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 52.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 52.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 51.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 51.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    ... okay on input line 51.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -583,11 +583,11 @@ Package: atbegshi 2016/06/09 v1.18 At begin shipout hook (HO)
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: showframe 
-* h-part:(L,W,R)=(14.22636pt, 2304.67325pt, 14.22636pt)
+* h-part:(L,W,R)=(14.22636pt, 2333.126pt, 14.22636pt)
 * v-part:(T,H,B)=(14.22636pt, 398.33861pt, 14.22636pt)
-* \paperwidth=2333.12598pt
+* \paperwidth=2361.57874pt
 * \paperheight=426.79134pt
-* \textwidth=2304.67325pt
+* \textwidth=2333.126pt
 * \textheight=398.33861pt
 * \oddsidemargin=-58.04362pt
 * \evensidemargin=-58.04362pt
@@ -658,60 +658,57 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 \c@lstlisting=\count269
-<4/id_4_GT.png, id=1, 406.1574pt x 312.9291pt>
-File: 4/id_4_GT.png Graphic file (type png)
-<use 4/id_4_GT.png>
-Package pdftex.def Info: 4/id_4_GT.png  used on input line 57.
-(pdftex.def)             Requested size: 142.26378pt x 109.60799pt.
-<5/id_5_GT.png, id=3, 398.2077pt x 268.8444pt>
+<11/id_11_GT.png, id=1, 245.718pt x 333.1647pt>
+File: 11/id_11_GT.png Graphic file (type png)
+<use 11/id_11_GT.png>
+Package pdftex.def Info: 11/id_11_GT.png  used on input line 56.
+(pdftex.def)             Requested size: 142.26378pt x 192.90013pt.
+<14/id_14_GT.png, id=3, 307.8702pt x 333.1647pt>
+File: 14/id_14_GT.png Graphic file (type png)
+<use 14/id_14_GT.png>
+Package pdftex.def Info: 14/id_14_GT.png  used on input line 57.
+(pdftex.def)             Requested size: 142.26378pt x 153.95407pt.
+<5/id_5_GT.png, id=4, 366.4089pt x 333.1647pt>
 File: 5/id_5_GT.png Graphic file (type png)
 <use 5/id_5_GT.png>
 Package pdftex.def Info: 5/id_5_GT.png  used on input line 58.
-(pdftex.def)             Requested size: 142.26378pt x 96.0455pt.
-<6/id_6_GT.png, id=4, 406.1574pt x 274.626pt>
-File: 6/id_6_GT.png Graphic file (type png)
-<use 6/id_6_GT.png>
-Package pdftex.def Info: 6/id_6_GT.png  used on input line 59.
-(pdftex.def)             Requested size: 142.26378pt x 96.19177pt.
-<7/id_7_GT.png, id=5, 398.2077pt x 302.8113pt>
-File: 7/id_7_GT.png Graphic file (type png)
-<use 7/id_7_GT.png>
-Package pdftex.def Info: 7/id_7_GT.png  used on input line 60.
-(pdftex.def)             Requested size: 142.26378pt x 108.18028pt.
-File: 7/id_7_GT.png Graphic file (type png)
-<use 7/id_7_GT.png>
-Package pdftex.def Info: 7/id_7_GT.png  used on input line 61.
-(pdftex.def)             Requested size: 142.26378pt x 108.18028pt.
-<10/id_10_GT.png, id=6, 406.1574pt x 310.0383pt>
-File: 10/id_10_GT.png Graphic file (type png)
-<use 10/id_10_GT.png>
-Package pdftex.def Info: 10/id_10_GT.png  used on input line 62.
-(pdftex.def)             Requested size: 142.26378pt x 108.59544pt.
+(pdftex.def)             Requested size: 142.26378pt x 129.35416pt.
+<8/id_8_GT.png, id=5, 398.2077pt x 333.1647pt>
+File: 8/id_8_GT.png Graphic file (type png)
+<use 8/id_8_GT.png>
+Package pdftex.def Info: 8/id_8_GT.png  used on input line 59.
+(pdftex.def)             Requested size: 142.26378pt x 119.02412pt.
+<9/id_9_GT.png, id=6, 407.6028pt x 326.6604pt>
+File: 9/id_9_GT.png Graphic file (type png)
+<use 9/id_9_GT.png>
+Package pdftex.def Info: 9/id_9_GT.png  used on input line 60.
+(pdftex.def)             Requested size: 142.26378pt x 114.01384pt.
+<4/id_4_GT.png, id=7, 412.6617pt x 255.1131pt>
+File: 4/id_4_GT.png Graphic file (type png)
+<use 4/id_4_GT.png>
+Package pdftex.def Info: 4/id_4_GT.png  used on input line 61.
+(pdftex.def)             Requested size: 142.26378pt x 87.94794pt.
 
-Overfull \hbox (63.16333pt too wide) in paragraph at lines 56--195
-[][] 
- []
-
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./4/id_4_GT.png> <./5/id
-_5_GT.png> <./6/id_6_GT.png> <./7/id_7_GT.png> <./10/id_10_GT.png>]
-(./non_rand_init_doc.aux) ) 
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./11/id_11_GT.png> <./14
+/id_14_GT.png> <./5/id_5_GT.png> <./8/id_8_GT.png> <./9/id_9_GT.png> <./4/id_4_
+GT.png>] (./non_rand_init_doc.aux) ) 
 Here is how much of TeX's memory you used:
- 7424 strings out of 492982
- 101989 string characters out of 6134896
- 239820 words of memory out of 5000000
- 10844 multiletter control sequences out of 15000+600000
+ 7430 strings out of 492982
+ 102083 string characters out of 6134896
+ 239824 words of memory out of 5000000
+ 10848 multiletter control sequences out of 15000+600000
  4402 words of font info for 17 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  45i,13n,37p,835b,345s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pf
-b>
-Output written on non_rand_init_doc.pdf (1 page, 98421 bytes).
+</usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmsy10.pfb>
+Output written on non_rand_init_doc.pdf (1 page, 110334 bytes).
 PDF statistics:
- 35 PDF objects out of 1000 (max. 8388607)
+ 37 PDF objects out of 1000 (max. 8388607)
  17 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 

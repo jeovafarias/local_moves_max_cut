@@ -44,7 +44,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
                         # print("Swapping (%d, %d), Current Class.: %s" % (alpha, beta, lb))
                         new_lb = abswap_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
                     elif move_type == "ae":
-                        # print("Expanding (%d), Current Class.: %s" % (alpha, lb))
+                        print("Expanding (%d), Current Class.: %s" % (alpha, lb))
                         new_lb = aexp_sdp(C, np.copy(lb), alpha, use_IPM=use_IPM)
                     elif move_type == "ae_bs":
                         # print("Expanding/shrinking (%d, %d), Current Class.: %s" % (alpha, beta, lb))
@@ -55,7 +55,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
                         max_ene = ene
                         lb = new_lb
 
-                    # Comment TODO
+                    # If it is an alpha expansion, there is no need to iterate over beta_sequence
                     if move_type == "ae":
                         break
         it += 1
