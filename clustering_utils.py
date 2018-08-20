@@ -159,7 +159,7 @@ def local_search(C, K, lb_init, num_max_it=100):
         c = C[:, i]
         return np.argmin([np.sum(c[np.nonzero(cl == k)[0]]) for k in range(K)])
 
-    err, it = np.inf, 0
+    err, it = np.inf, 1
     lb = lb_init
     while err > 1e-10 and it < num_max_it:
         lb_prev = np.copy(lb)
@@ -168,7 +168,7 @@ def local_search(C, K, lb_init, num_max_it=100):
             lb[i] = min_cost(C, K, lb, i)
         err = np.linalg.norm(lb - lb_prev)
 
-    return lb
+    return lb, it
 
 
 # OTHER FUNCTIONS ======================================================================================================

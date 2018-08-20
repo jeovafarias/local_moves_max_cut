@@ -3,10 +3,198 @@
   <component name="ChangeListManager">
     <list default="true" id="910e355f-5f08-4027-9d7f-f780f173d170" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/dataset_previous.dat" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_previous.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.log" beforeDir="false" afterPath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.tex" beforeDir="false" afterPath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.tex" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/clustering_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/clustering_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_previous.dat" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_previous.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/id_0_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/0/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/id_1_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/1/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/id_10_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/10/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/11/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/11/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/11/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/11/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/11/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/11/id_11_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/11/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/11/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/id_12_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/12/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/id_2_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/2/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/id_3_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/3/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/id_4_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/4/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/id_5_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/5/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/id_6_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/6/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/id_7_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/7/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/id_8_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/8/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/id_9_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/9/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.aux" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_non_rand_int/non_rand_init_doc.tex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/0/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/0/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/0/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/0/id_0_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/0/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/1/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/1/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/1/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/1/id_1_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/1/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/2/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/2/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/2/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/2/id_2_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/2/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/3/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/3/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/3/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/3/id_3_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/3/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/4/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/4/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/4/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/4/id_4_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/4/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/5/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/5/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/5/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/5/id_5_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/5/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/id_6_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/6/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/id_7_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/7/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/P.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/ab_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/ab_sequence.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/ae_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/aebs_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/gt.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/id_8_GT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/lb_init.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/8/ls_results.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/rand_init_doc.aux" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/rand_init_doc.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/rand_init_doc.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments_rand_int/rand_init_doc.tex" beforeDir="false" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
       <change beforePath="$PROJECT_DIR$/generate_experiments_moves.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_experiments_moves.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ground_truth_previous.dat" beforeDir="false" afterPath="$PROJECT_DIR$/ground_truth_previous.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sdp_solvers.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdp_solvers.py" afterDir="false" />
@@ -20,14 +208,23 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/local_search_moves$alpha_exp_max_cut.coverage" NAME="alpha_exp_max_cut Coverage Results" MODIFIED="1533064525527" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/local_search_moves$alpha_beta_swap_max_cut.coverage" NAME="alpha_beta_swap_max_cut Coverage Results" MODIFIED="1532975767889" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+<<<<<<< HEAD
     <SUITE FILE_PATH="coverage/local_search_moves$test_maxcut_moves.coverage" NAME="test_maxcut_moves Coverage Results" MODIFIED="1533317639713" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/local_search_moves$alpha_exp_beta_shrink_max_cut.coverage" NAME="alpha_exp_beta_shrink_max_cut Coverage Results" MODIFIED="1532978444646" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/local_search_moves$comparison_moves_localsearch.coverage" NAME="comparison_moves_localsearch Coverage Results" MODIFIED="1534739648526" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+=======
+    <SUITE FILE_PATH="coverage/local_search_moves$test_maxcut_moves.coverage" NAME="test_maxcut_moves Coverage Results" MODIFIED="1533323928503" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/local_search_moves$clustering_utils.coverage" NAME="clustering_utils Coverage Results" MODIFIED="1533152460173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/local_search_moves$moves.coverage" NAME="moves Coverage Results" MODIFIED="1533167826753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/local_search_moves$alpha_exp_beta_shrink_max_cut.coverage" NAME="alpha_exp_beta_shrink_max_cut Coverage Results" MODIFIED="1532978444646" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/local_search_moves$comparison_moves_localsearch.coverage" NAME="comparison_moves_localsearch Coverage Results" MODIFIED="1533595761283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="-598783469">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+<<<<<<< HEAD
           <entry key="project.closed" value="5" />
           <entry key="project.open.time.1" value="5" />
           <entry key="project.open.time.11" value="1" />
@@ -36,33 +233,60 @@
           <entry key="project.open.time.34" value="1" />
           <entry key="project.open.time.8" value="1" />
           <entry key="project.opened" value="10" />
+=======
+          <entry key="project.closed" value="6" />
+          <entry key="project.open.time.1" value="5" />
+          <entry key="project.open.time.13" value="1" />
+          <entry key="project.open.time.14" value="1" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.opened" value="8" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="dat" value="1" />
           <entry key="pstat" value="1" />
+<<<<<<< HEAD
           <entry key="py" value="45" />
+=======
+          <entry key="py" value="44" />
+          <entry key="tex" value="1" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="PLAIN_TEXT" value="2" />
           <entry key="Profiler Session" value="1" />
+<<<<<<< HEAD
           <entry key="Python" value="45" />
+=======
+          <entry key="Python" value="44" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
+<<<<<<< HEAD
           <entry key="Python Console" value="638" />
           <entry key="dummy" value="38" />
           <entry key="py" value="8941" />
+=======
+          <entry key="Python Console" value="698" />
+          <entry key="dummy" value="38" />
+          <entry key="py" value="7807" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="38" />
+<<<<<<< HEAD
           <entry key="Python" value="9579" />
+=======
+          <entry key="Python" value="8505" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         </counts>
       </usages-collector>
       <usages-collector id="statistics.js.language.service.starts" />
@@ -70,11 +294,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/moves.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="2805">
               <caret line="190" column="8" selection-start-line="190" selection-start-column="8" selection-end-line="190" selection-end-column="46" />
+=======
+            <state relative-caret-position="166">
+              <caret line="86" column="15" selection-start-line="86" selection-start-column="8" selection-end-line="86" selection-end-column="15" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
             </state>
           </provider>
         </entry>
@@ -82,22 +314,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sdp_solvers.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="45">
               <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
               <folding>
                 <marker date="1533323787000" expanded="true" signature="362:364" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test_maxcut_moves.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="900">
-              <caret line="67" column="28" selection-start-line="67" selection-start-column="28" selection-end-line="67" selection-end-column="28" />
+=======
+            <state relative-caret-position="124">
+              <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="32" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
               </folding>
             </state>
           </provider>
@@ -106,8 +333,31 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/generate_experiments_moves.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="900">
+              <caret line="67" column="28" selection-start-line="67" selection-start-column="28" selection-end-line="67" selection-end-column="28" />
+=======
+            <state relative-caret-position="210">
+              <caret line="83" column="41" selection-start-line="83" selection-start-column="41" selection-end-line="83" selection-end-column="41" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+                <marker date="1533595761166" expanded="true" signature="541:1302" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/generate_experiments_moves.py">
+          <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="201">
               <caret line="57" selection-start-line="57" selection-end-line="57" />
+=======
+            <state relative-caret-position="45">
+              <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -161,10 +411,18 @@
         <option value="$PROJECT_DIR$/alpha_exp_max_cut.py" />
         <option value="$PROJECT_DIR$/test_maxcut_moves (Jeová Farias's conflicted copy 2018-08-01).py" />
         <option value="$PROJECT_DIR$/comparison_moves_localsearch.py" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/clustering_utils.py" />
         <option value="$PROJECT_DIR$/moves.py" />
         <option value="$PROJECT_DIR$/test_maxcut_moves.py" />
         <option value="$PROJECT_DIR$/sdp_solvers.py" />
+=======
+        <option value="$PROJECT_DIR$/data_generation_tools.py" />
+        <option value="$PROJECT_DIR$/test_maxcut_moves.py" />
+        <option value="$PROJECT_DIR$/sdp_solvers.py" />
+        <option value="$PROJECT_DIR$/moves.py" />
+        <option value="$PROJECT_DIR$/clustering_utils.py" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         <option value="$PROJECT_DIR$/generate_experiments_moves.py" />
         <option value="$PROJECT_DIR$/data_generation_tools.py" />
       </list>
@@ -194,6 +452,22 @@
             <path>
               <item name="local search moves" type="b2602c69:ProjectViewProjectNode" />
               <item name="local search moves" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="local search moves" type="b2602c69:ProjectViewProjectNode" />
+              <item name="local search moves" type="462c0819:PsiDirectoryNode" />
+              <item name="experiments_rand_int" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="local search moves" type="b2602c69:ProjectViewProjectNode" />
+              <item name="local search moves" type="462c0819:PsiDirectoryNode" />
+              <item name="experiments_rand_int" type="462c0819:PsiDirectoryNode" />
+              <item name="0" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="local search moves" type="b2602c69:ProjectViewProjectNode" />
+              <item name="local search moves" type="462c0819:PsiDirectoryNode" />
+              <item name="latex_experiments_doc" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -364,6 +638,7 @@
     <frame x="0" y="0" width="1920" height="1044" extended-state="6" />
     <editor active="true" />
     <layout>
+<<<<<<< HEAD
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27374598" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -371,6 +646,15 @@
       <window_info anchor="bottom" id="Find" order="1" weight="0.3295964" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49816176" weight="0.32677597" />
       <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.57814205" />
+=======
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26838234" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32882884" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49816176" weight="0.3265766" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.5777027" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -379,7 +663,11 @@
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5018382" side_tool="true" weight="0.3277027" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.3293348" />
+<<<<<<< HEAD
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32847533" />
+=======
+      <window_info anchor="bottom" id="Python Console" order="12" weight="0.3277027" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -398,11 +686,12 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/generate_experiments_moves.py</url>
-          <line>118</line>
-          <option name="timeStamp" value="52" />
+          <url>file://$PROJECT_DIR$/moves.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+<<<<<<< HEAD
           <url>file://$PROJECT_DIR$/moves.py</url>
           <line>106</line>
           <option name="timeStamp" value="53" />
@@ -411,6 +700,31 @@
           <url>file://$PROJECT_DIR$/generate_experiments_moves.py</url>
           <line>57</line>
           <option name="timeStamp" value="54" />
+=======
+          <url>file://$PROJECT_DIR$/sdp_solvers.py</url>
+          <line>11</line>
+          <option name="timeStamp" value="66" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/generate_experiments_moves.py</url>
+          <line>82</line>
+          <option name="timeStamp" value="70" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/moves.py</url>
+          <line>44</line>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/moves.py</url>
+          <line>82</line>
+          <option name="timeStamp" value="72" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/moves.py</url>
+          <line>91</line>
+          <option name="timeStamp" value="73" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -445,6 +759,7 @@
       </provider>
     </entry>
     <entry file="file:///usr/lib/python2.7/dist-packages/numpy/core/fromnumeric.py" />
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/data_visualization_tools.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-210">
@@ -459,19 +774,47 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="16455">
           <caret line="1117" selection-start-line="1117" selection-end-line="1117" />
+=======
+    <entry file="file://$PROJECT_DIR$/data_generation_tools.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="35" selection-start-line="22" selection-start-column="35" selection-end-line="22" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/numpy/core/numeric.py" />
+    <entry file="file://$PROJECT_DIR$/latex_experiments_doc/template.tex">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2565" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_visualization_tools.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/clustering_utils.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="1133">
           <caret line="235" selection-start-line="235" selection-end-line="235" />
+=======
+        <state relative-caret-position="289">
+          <caret line="161" column="23" selection-start-line="161" selection-start-column="23" selection-end-line="161" selection-end-column="23" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
           <folding>
             <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/moves.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2805">
@@ -483,6 +826,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
+=======
+    <entry file="file://$PROJECT_DIR$/sdp_solvers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="32" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
           <folding>
             <marker date="1533323787000" expanded="true" signature="362:364" ph="..." />
           </folding>
@@ -491,8 +840,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test_maxcut_moves.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="900">
           <caret line="67" column="28" selection-start-line="67" selection-start-column="28" selection-end-line="67" selection-end-column="28" />
+=======
+        <state relative-caret-position="289">
+          <caret line="45" column="33" selection-start-line="45" selection-start-column="33" selection-end-line="45" selection-end-column="33" />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -501,18 +855,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/generate_experiments_moves.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="201">
           <caret line="57" selection-start-line="57" selection-end-line="57" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+=======
+        <state relative-caret-position="210">
+          <caret line="83" column="41" selection-start-line="83" selection-start-column="41" selection-end-line="83" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+            <marker date="1533595761166" expanded="true" signature="541:1302" ph="..." />
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/data_generation_tools.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="128">
           <caret line="76" column="60" selection-start-line="76" selection-start-column="60" selection-end-line="76" selection-end-column="60" />
+=======
+    <entry file="file://$PROJECT_DIR$/moves.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="86" column="15" selection-start-line="86" selection-start-column="8" selection-end-line="86" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+>>>>>>> 759c6a830a44264c1577b712dec36863738ca15b
         </state>
       </provider>
     </entry>

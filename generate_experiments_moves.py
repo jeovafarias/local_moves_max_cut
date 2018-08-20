@@ -15,7 +15,7 @@ np.set_printoptions(linewidth=1000, precision=4, threshold=np.nan, suppress=True
 
 
 # noinspection PyStringFormat
-def save_data(purities, energies, percentages_energy, times, dirpath, filename="test"):
+def save_data(purities, energies, percentages_energy, times, iterations, dirpath, filename="test"):
 
     f = open(str(dirpath) + '/' + filename + '.dat', 'a')
     f.write('prop|value\n')
@@ -35,6 +35,9 @@ def save_data(purities, energies, percentages_energy, times, dirpath, filename="
     f.write('per|%.2f\n' % (100 * np.mean(percentages_energy)))
     f.write('per_std|%.4f\n' % np.std(percentages_energy))
     f.write('per_max|%.2f\n' % (100 * np.max(percentages_energy)))
+
+    f.write('it|%.4f\n' % np.mean(iterations))
+
     f.close()
 
 
@@ -58,18 +61,18 @@ def run_test(n, K, sigma_2, num_trials, random_init, dir_name='test'):
     use_IPM = 1
     num_max_it = 20
 
-    ab_pur_t, ab_ene_t, ab_per_t, ab_tim_t = np.zeros(num_trials), np.zeros(num_trials), \
-                                             np.zeros(num_trials), np.zeros(num_trials)
-    ae_pur_t, ae_ene_t, ae_per_t, ae_tim_t = np.zeros(num_trials), np.zeros(num_trials), \
-                                             np.zeros(num_trials), np.zeros(num_trials)
-    aebs_pur_t, aebs_ene_t, aebs_per_t, aebs_tim_t = np.zeros(num_trials), np.zeros(num_trials), \
-                                                     np.zeros(num_trials), np.zeros(num_trials)
-    ls_pur_t, ls_ene_t, ls_per_t, ls_tim_t = np.zeros(num_trials), np.zeros(num_trials), \
-                                             np.zeros(num_trials), np.zeros(num_trials)
+    ab_pur_t, ab_ene_t, ab_per_t, ab_tim_t, ab_it = np.zeros(num_trials), np.zeros(num_trials), \
+                                             np.zeros(num_trials), np.zeros(num_trials), np.zeros(num_trials)
+    ae_pur_t, ae_ene_t, ae_per_t, ae_tim_t, ae_it = np.zeros(num_trials), np.zeros(num_trials), \
+                                             np.zeros(num_trials), np.zeros(num_trials), np.zeros(num_trials)
+    aebs_pur_t, aebs_ene_t, aebs_per_t, aebs_tim_t, aebs_it = np.zeros(num_trials), np.zeros(num_trials), \
+                                                     np.zeros(num_trials), np.zeros(num_trials), np.zeros(num_trials)
+    ls_pur_t, ls_ene_t, ls_per_t, ls_tim_t, ls_it = np.zeros(num_trials), np.zeros(num_trials), \
+                                             np.zeros(num_trials), np.zeros(num_trials), np.zeros(num_trials)
 
     # Iterate ----------------------------------------------------------------------------------------------------------
     for t in range(num_trials):
-        print t
+        print ("Running experiment %d of %d" % (t + 1, num_trials))
         if random_init:
             lb_init = np.random.randint(0, K, N)
             ab_sequence = None
@@ -78,28 +81,28 @@ def run_test(n, K, sigma_2, num_trials, random_init, dir_name='test'):
             ab_sequence = np.array([np.random.choice(K, K, replace=False), np.random.choice(K, K, replace=False)])
 
         start_t = time.time()
-        lb_ab = moves.large_move_maxcut(C, K, lb_init,
+        lb_ab, ab_it[t] = moves.large_move_maxcut(C, K, lb_init,
                                         move_type="ab", ab_sequence=ab_sequence,
                                         num_max_it=num_max_it, use_IPM=use_IPM)
         ab_pur_t[t], ab_ene_t[t], ab_per_t[t] = cu.stats_clustering(C, lb_ab, ground_truth)
         ab_tim_t[t] = time.time() - start_t
 
         start_t = time.time()
-        lb_ae = moves.large_move_maxcut(C, K, lb_init,
+        lb_ae, ae_it[t] = moves.large_move_maxcut(C, K, lb_init,
                                         move_type="ae", ab_sequence=ab_sequence,
                                         num_max_it=num_max_it, use_IPM=use_IPM)
         ae_pur_t[t], ae_ene_t[t], ae_per_t[t] = cu.stats_clustering(C, lb_ae, ground_truth)
         ae_tim_t[t] = time.time() - start_t
 
         start_t = time.time()
-        lb_aebs = moves.large_move_maxcut(C, K, lb_init,
+        lb_aebs, aebs_it[t] = moves.large_move_maxcut(C, K, lb_init,
                                           move_type="ae_bs", ab_sequence=ab_sequence,
                                           num_max_it=num_max_it, use_IPM=use_IPM)
         aebs_pur_t[t], aebs_ene_t[t], aebs_per_t[t] = cu.stats_clustering(C, lb_aebs, ground_truth)
         aebs_tim_t[t] = time.time() - start_t
 
         start_t = time.time()
-        lb_ls = cu.local_search(C, K, lb_init, num_max_it=num_max_it)
+        lb_ls, ls_it[t] = cu.local_search(C, K, lb_init, num_max_it=num_max_it)
         ls_pur_t[t], ls_ene_t[t], ls_per_t[t] = cu.stats_clustering(C, lb_ls, ground_truth)
         ls_tim_t[t] = time.time() - start_t
 
@@ -125,22 +128,26 @@ def run_test(n, K, sigma_2, num_trials, random_init, dir_name='test'):
     print("ALPHA-BETA SWAP (id %d):" % experiment_id)
     print("> Mean time: %.4f + %.4f" % (np.mean(ab_tim_t), np.std(ab_tim_t)))
     print("> Mean pur:  %.4f + %.4f" % (np.mean(ab_pur_t), np.std(ab_pur_t)))
-    save_data(ab_pur_t, ab_ene_t, ab_per_t, ab_tim_t, dirpath, filename="ab_results")
+    print("> Mean iterations:  %.4f" % np.mean(ab_it))
+    save_data(ab_pur_t, ab_ene_t, ab_per_t, ab_tim_t, ab_it, dirpath, filename="ab_results")
 
     print("ALPHA EXPANSION (id %d):" % experiment_id)
     print("> Mean time: %.4f + %.4f" % (np.mean(ae_tim_t), np.std(ae_tim_t)))
     print("> Mean pur:  %.4f + %.4f" % (np.mean(ae_pur_t), np.std(ae_pur_t)))
-    save_data(ae_pur_t, ae_ene_t, ae_per_t, ae_tim_t, dirpath, filename="ae_results")
+    print("> Mean iterations:  %.4f" % np.mean(ae_it))
+    save_data(ae_pur_t, ae_ene_t, ae_per_t, ae_tim_t, ae_it, dirpath, filename="ae_results")
 
     print("ALPHA EXPANSION-BETA SHRINK (id %d):" % experiment_id)
     print("> Mean time: %.4f + %.4f" % (np.mean(aebs_tim_t), np.std(aebs_tim_t)))
     print("> Mean pur:  %.4f + %.4f" % (np.mean(aebs_pur_t), np.std(aebs_pur_t)))
-    save_data(aebs_pur_t, aebs_ene_t, aebs_per_t, aebs_tim_t, dirpath, filename="aebs_results")
+    print("> Mean iterations:  %.4f" % np.mean(aebs_it))
+    save_data(aebs_pur_t, aebs_ene_t, aebs_per_t, aebs_tim_t, aebs_it, dirpath, filename="aebs_results")
 
     print("LOCAL SEARCH (id %d):" % experiment_id)
     print("> Mean time: %.4f + %.4f" % (np.mean(ls_tim_t), np.std(ls_tim_t)))
     print("> Mean pur:  %.4f + %.4f" % (np.mean(ls_pur_t), np.std(ls_pur_t)))
-    save_data(ls_pur_t, ls_ene_t, ls_per_t, ls_tim_t, dirpath, filename="ls_results")
+    print("> Mean iterations:  %.4f" % np.mean(ls_it))
+    save_data(ls_pur_t, ls_ene_t, ls_per_t, ls_tim_t, ls_it, dirpath, filename="ls_results")
 
     print("Total time (id %d): %.4f s\n" % (experiment_id, time.time() - time_start))
 
@@ -151,6 +158,7 @@ if __name__ == "__main__":
         dir_name = 'experiments_rand_int'
     else:
         dir_name = 'experiments_non_rand_int'
+
     num_trials = 1000
 
     dir_name = 'experiments_ls'
@@ -167,6 +175,21 @@ if __name__ == "__main__":
 
     points_per_cluster = 100
     K = 3
+    num_trials = 10
+
+    points_per_cluster = 3
+    K = 3
+    sigmas = [0.15, 0.15, 0.15]
+    for e in range(len(sigmas)):
+        print('EXP. %d - 1 =================================================================================' % (e + 1))
+        sigma_1 = 1
+        sigma_2 = sigmas[e]
+        run_test(points_per_cluster, K, sigma_2, num_trials, random_init, dir_name=dir_name)
+    print("SET FINISHED ========================================================================== \n")
+
+    points_per_cluster = 10
+    K = 4
+
     sigmas = [0.15, 0.2, 0.2]
     for e in range(len(sigmas)):
         print('EXP. %d - 2 =================================================================================' % (e + 1))
@@ -175,8 +198,8 @@ if __name__ == "__main__":
         run_test(points_per_cluster, K, sigma_2, num_trials, random_init, dir_name=dir_name)
     print("SET FINISHED ========================================================================== \n")
 
-    points_per_cluster = 2
-    K = 4
+    points_per_cluster = 5
+    K = 10
     sigmas = [0.15, 0.15]
     for e in range(len(sigmas)):
         print('EXP. %d - 3 =================================================================================' % (e + 1))

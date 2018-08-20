@@ -6,6 +6,7 @@ import clustering_utils as cu
 import moves
 import os
 import sys
+import sdp_solvers
 
 np.set_printoptions(linewidth=1000, precision=5, threshold=np.nan, suppress=True)
 
@@ -42,6 +43,7 @@ if __name__ == "__main__":
 
     # C = skl.pairwise_distances(P, metric='sqeuclidean')
     dv.plot_data(P, K, ground_truth, 2)
+    lb = sdp_solvers.maxcut_brute_force_solver(C)
 
     # Other parameters -------------------------------------------------------------------------------------------------
     random_init = 0

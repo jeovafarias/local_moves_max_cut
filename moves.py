@@ -33,7 +33,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
     lb = np.copy(lb_init)
 
     # Iterate moves ----------------------------------------------------------------------------------------------------
-    it, max_ene, err = 0, 0, np.inf
+    it, max_ene, err = 1, 0, np.inf
     while err > 1e-10 and it < num_max_it:
         lb_prev = np.copy(lb)
 
@@ -61,7 +61,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
         it += 1
         err = np.linalg.norm(lb - lb_prev)
 
-    return lb
+    return lb, it
 
 
 def abswap_sdp(C_initial, lb, alpha, beta, use_IPM=False):
