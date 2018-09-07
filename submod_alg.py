@@ -1,4 +1,4 @@
-#import numpy as np 
+import numpy as np 
 
 # NOTE: may not be fast - need to improve by using edge indices after
 # finding the subproblem
@@ -275,7 +275,7 @@ def localSearchSubmod(V,E,w,k,origLabels,moveType = 'ab',moveSequence=None,maxIt
     Returns:
         labels (dict of int: int): updated clustering labels for each v in V
     """
-    assert moveType in ("ab", "aexp")
+    assert moveType in ("ab", "aexp", "aebs", "aexp-ran", "aexp-2b")
 
     if moveSequence == None:
         if moveType == 'ab':
@@ -297,6 +297,38 @@ def localSearchSubmod(V,E,w,k,origLabels,moveType = 'ab',moveSequence=None,maxIt
                 alpha = move
                 #print("Expanding (%d), Current Class.: %s" % (alpha, labels))
                 newLabels = submodAlg(V,E,w,labels,moveType,alpha)
+            elif moveType == 'aebs':
+                alpha,beta = move[0],move[1]
+                labelsTemp = labels.copy()
+                for v in V:
+                    if labelsTemp[v] == alpha:
+                        labelsTemp[v] = beta
+                newLabels = submodAlg(V,E,w,labelsTemp,'aexp',alpha)
+            elif moveType == 'aexp-ran':
+                alpha = move
+                labelsTemp = labels.copy()
+                # Relabel those with label alpha randomly before alpha exp
+                for v in V:
+                    while (labelsTemp[v] == alpha):
+                        labelsTemp[v] = np.random.randint(0,k)
+                newLabels = submodAlg(V,E,w,labelsTemp,'aexp',alpha)
+            elif moveType == 'aexp-2b':
+                alpha = move
+                labelsTemp = labels.copy()
+                # Relabel those with label alpha to other best option before alpha-exp
+                for v in V:
+                    if labelsTemp[v] == alpha:
+                        best_label, best_ene = alpha, 0
+                        for i in range(k):
+                            if i == alpha:
+                                continue
+                            labelsTemp[v] = i
+                            ene = energy(V,E,w,labelsTemp)
+                            if ene < best_ene:
+                                labelsTemp[v] = best_label
+                            else:
+                                best_label, best_ene = i, ene
+                newLabels = submodAlg(V,E,w,labelsTemp,'aexp',alpha)
                     
             ene = energy(V,E,w,newLabels)
             if ene > maxEne:

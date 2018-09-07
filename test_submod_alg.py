@@ -1,5 +1,6 @@
 import submod_alg as sa
 import unittest
+import numpy as np
 
 places = 6
 
@@ -291,7 +292,10 @@ class TestLocalSearch(unittest.TestCase):
         self.assertNotEqual(newlabels[1],newlabels[3])
         self.assertNotEqual(newlabels[1],newlabels[5])
         self.assertNotEqual(newlabels[3],newlabels[5])
-        
+
+        #labels = {1:1,2:2,3:0,4:1,5:1,6:2}
+        #labels = {i:np.random.randint(0, 3) for i in range(1,7)}
+        #newlabels = sa.localSearch(V,E,w,k,labels)
 
 if __name__ == '__main__':
     unittest.main()

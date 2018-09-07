@@ -57,7 +57,6 @@ def purity(lb, gt):
     lb = np.array(lb)
     gt = np.array(gt)
     K = len(set(gt))
-
     population_vec = [float(np.sum([lb == i])) for i in range(K)]
     h = np.zeros(K)
     for i in range(K):
