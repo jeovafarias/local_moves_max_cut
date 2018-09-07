@@ -1,0 +1,13 @@
+prop|value
+exp|10
+tim|0.0025
+tim_std|0.0036
+pur|0.4250
+pur_std|0.0586
+pur_max|0.5000
+ene|1042.7958
+ene_std|49.1784
+ene_max|1100.8969
+per|74.14
+per_std|0.0350
+per_max|78.27

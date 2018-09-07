@@ -48,14 +48,14 @@ def run_test(n, K, sigma_2, num_trials, random_init, dir_name='test'):
     # Data generation parameters ---------------------------------------------------------------------------------------
     N = n * K
     use_prev_p = 0
-    shuffle_data = 0
-    params_data = {'sigma_1': 1, 'sigma_2': sigma_2, 'K': K, 'dim_space': 2, 'pop_interv': [n, n],
+    shuffle_data = 1
+    params_data = {'sigma_1': 3, 'sigma_2': 10, 'K': K, 'dim_space': 2, 'set_size': 3, 'pop_interv': [n, n],
                    'use_prev_p': use_prev_p, 'shuffle': shuffle_data}
 
     # Data generation and visualization --------------------------------------------------------------------------------
     P, ground_truth = dg.generate_data_random(params_data)
     C = skl.pairwise_distances(P, metric='sqeuclidean')
-    dv.plot_data(P, K, ground_truth, 2)
+    dv.plot_data(P, K, ground_truth, 2, show_data=True)
 
     # Other parameters -------------------------------------------------------------------------------------------------
     use_IPM = 1
@@ -158,6 +158,23 @@ if __name__ == "__main__":
         dir_name = 'experiments_rand_int'
     else:
         dir_name = 'experiments_non_rand_int'
+
+    num_trials = 1000
+
+    dir_name = 'experiments_ls'
+
+    # points_per_cluster = 10
+    # K = 3
+    # sigmas = [0.15, 0.15, 0.15]
+    # for e in range(len(sigmas)):
+    #     print('EXP. %d - 1 =================================================================================' % (e + 1))
+    #     sigma_1 = 1
+    #     sigma_2 = sigmas[e]
+    #     run_test(points_per_cluster, K, sigma_2, num_trials, random_init, dir_name=dir_name)
+    # print("SET FINISHED ========================================================================== \n")
+
+    points_per_cluster = 100
+    K = 3
     num_trials = 10
 
     points_per_cluster = 3
@@ -172,6 +189,7 @@ if __name__ == "__main__":
 
     points_per_cluster = 10
     K = 4
+
     sigmas = [0.15, 0.2, 0.2]
     for e in range(len(sigmas)):
         print('EXP. %d - 2 =================================================================================' % (e + 1))
