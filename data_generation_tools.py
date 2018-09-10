@@ -162,16 +162,16 @@ def generate_unif_ball(K, n, r, sigma, dim_ambient_space):
 # and the centers are grid points are min_dist apart
 def generate_gaussian_mindist(K, n, min_dist, sigma, dim_ambient_space):
     # generate uniform centers with range = [-1,1] but maintain min distance
-    centers= np.zeros(shape=(K,dim_ambient_space))
+    centers = np.zeros(shape=(K, dim_ambient_space))
     for i in range(K):
-        centers[i,:] = np.random.uniform(-1, 1, dim_ambient_space)
+        centers[i, :] = np.random.uniform(-1, 1, dim_ambient_space)
         if i != 0:
-            while (min(skl.pairwise_distances(centers[0:i,:],centers[i,:].reshape(1,-1),metric='euclidean')) < min_dist):
-                centers[i,:] = np.random.uniform(-1, 1, dim_ambient_space)
+            while min(skl.pairwise_distances(centers[0:i, :], centers[i, :].reshape(1, -1), metric='euclidean')) < min_dist:
+                centers[i, :] = np.random.uniform(-1, 1, dim_ambient_space)
 
     # generate points for each cluster around center
     for i in range(K):
-        new_points = sigma*np.random.randn(n,dim_ambient_space)+centers[i,:]
+        new_points = sigma*np.random.randn(n, dim_ambient_space) + centers[i, :]
         if 'P' not in locals():
             P = new_points
         else:

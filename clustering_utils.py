@@ -6,7 +6,7 @@ import sdp_solvers
 # CLUSTERING ASSESSMENT TOOLS ==========================================================================================
 def stats_clustering(C, lb, gt):
     """
-    Compute the purity, the clustering energy and the energy percentage of a partition (clustering)
+    Compute the purity, the min purity, the clustering energy and the energy percentage of a partition (clustering)
 
     :param C: (2d array[float], NxN) - Weight matrix from the data (N points)
     :param lb: (1d array[integer]) - Labeling to be assessed
@@ -15,7 +15,8 @@ def stats_clustering(C, lb, gt):
              (float) - clustering energy,
              (float) - energy percentage
     """
-    return purity(lb, gt), energy_clustering(C, lb), percentage_energy_clustering(C, lb)
+    return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
+           energy_clustering(C, lb), percentage_energy_clustering(C, lb)
 
 
 def energy_clustering(C, lb):
@@ -46,25 +47,33 @@ def percentage_energy_clustering(C, lb):
     return energy_clustering(C, lb) / np.sum(C)
 
 
-def purity(lb, gt):
+def purity(lb, gt, type="ave"):
     """
     Compute clustering purity
 
     :param lb: (1d array[integer]) - Labeling to be assessed
     :param gt: (1d array[integer]) - Ground Truth labeling
+    :param type: string - Purity type: "min" for min-purity; "ave" for average
     :return: (float) - clustering purity
     """
+    assert type in ["min", "ave"]
+
     lb = np.array(lb)
     gt = np.array(gt)
     K = len(set(gt))
     population_vec = [float(np.sum([lb == i])) for i in range(K)]
     h = np.zeros(K)
+
     for i in range(K):
         if population_vec[i] > 0:
             h[i] = np.max(np.bincount(gt[lb == i])) / population_vec[i]
         else:
             h[i] = 0
-    return np.average(h, weights=population_vec)
+
+    if type == "ave":
+        return np.average(h, weights=population_vec)
+    else:
+        return np.min(h)
 
 
 # CLUSTERING METHODS USING SDP SOLVERS =================================================================================
