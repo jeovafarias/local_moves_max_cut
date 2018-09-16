@@ -9,33 +9,29 @@ def generate_data_random(params):
 
     :param params: (Dictionary) - {'sigma_1' (float): First noise parameter, 'sigma_2' (float): Second noise parameter,
                                    'K' (integer): number rof clusters, 'dim_space' (integer): points dimensionality,
-                                   'pop_interv' (1d array[integer]): interval from which the population (num. of points)
-                                   of each cluster will be drawn, 'set_size' (integer): subspace dimensionality + 2,
-                                   'use_prev_p' (boolean): use previous, 'shuffle' (boolean): shuffle data}
+                                   'n' (integer): num. of points per cluster, 'l' (integer): subspace
+                                   dimensionality, 'use_prev_p' (boolean): use previous, 'shuffle' (boolean): shuffle data}
     :return: (2d array[float], Nxd) - Points in R^d
              (1d array[float]) - Ground Truth labelling
     """
-    pop_interval = params['pop_interv']
-    assert (params['set_size'] >= 2), "Wrong set size!"
 
     if params['use_prev_p']:
-        P = np.loadtxt("X_nice.dat")
-        population_vec = np.loadtxt("pop_vec_nice.dat", dtype=np.int16)
+        P = np.loadtxt("P.dat")
+        ground_truth = np.loadtxt("gt.dat", dtype=np.int16)
     else:
-        population_vec = np.random.randint(pop_interval[0], pop_interval[1] + 1, size=params['K'])
-        if params['set_size'] == 2:
-            P = bump_generator(params['K'], population_vec, params['sigma_1'], params['sigma_2'], params['dim_space'])
+        if params['l'] == 2:
+            if params['min_dist'] > 0:
+                P, ground_truth = generate_gaussian_mindist(params['K'], params['n'], params['min_dist'],
+                                                            params['sigma_2'], params['dim_space'])
+            else:
+                P, ground_truth = bump_generator(params['K'], params['n'], params['sigma_1'],
+                                                 params['sigma_2'], params['dim_space'])
         else:
-            P = subspace_generator(params['K'], population_vec, params['sigma_1'], params['sigma_2'],
-                                   params['dim_space'], params['set_size'] - 2)
+            P, ground_truth = subspace_generator(params['K'], params['n'], params['sigma_1'], params['sigma_2'],
+                                                 params['dim_space'], params['l'])
 
-        np.savetxt('X_nice.dat', P)
-        np.savetxt('pop_vec_nice.dat', population_vec)
-
-    gt = []
-    for i in range(params['K']):
-        gt.extend((i * np.ones(population_vec[i])).astype(int))
-    ground_truth = np.array(gt)
+        np.savetxt('P.dat', P)
+        np.savetxt('gt.dat', ground_truth)
 
     if params['shuffle']:
         sequence = np.array(range(len(ground_truth)))
@@ -46,52 +42,53 @@ def generate_data_random(params):
     return P, ground_truth
 
 
-def bump_generator(K, population_vec, sigma_1, sigma_2, dim_space):
+def bump_generator(K, n, sigma_1, sigma_2, dim_space):
     """
     Generate points in bumps, i.e. Gaussian distributed with variace sigma_2
 
     :param K: (integer) - Number of clusters (bumps)
-    :param population_vec: interval from which the population of each cluster will be drawn
+    :param n: number of points per cluster
     :param sigma_1: (float) - Dispersion within the clusters (bumps) centers
     :param sigma_2: (float) - Dispersion within the points in each cluster
     :param dim_space: (integer) - points dimensionality
     :return: (2d array[float], Nxd) - Points in R^d
     """
     for i in range(0, K):
-        #if dim_ambient_space == 2:
-        #    point = np.zeros(2)
-        #    point[0] = 1.5*np.random.uniform(-sigma_1, sigma_1, 1)
-        #    point[1] = np.random.uniform(-sigma_1, sigma_1, 1)
         point = np.random.normal(0, sigma_1, dim_space)
-        population = population_vec[i]
-
-        new_points = sigma_2 * np.random.randn(population, dim_space) + point
+        new_points = sigma_2 * np.random.randn(n, dim_space) + point
         if 'P' not in locals():
             P = new_points
         else:
             P = np.concatenate((P, new_points))
 
-    return P
+    gt = []
+    for i in range(K):
+        gt.extend([i for _ in range(n)])
+    ground_truth = np.array(gt)
+
+    return P, ground_truth
 
 
-def subspace_generator(K, population_vec, sigma_1, sigma_2, dim_space, set_size):
+def subspace_generator(K, n, sigma_1, sigma_2, dim_space, l):
     """
      Generate points in subspaces of dimensionality lower than the space
 
     :param K: (integer) - Number of clusters (bumps)
-    :param population_vec: interval from which the population of each cluster will be drawn
+    :param n: number of points per cluster
     :param sigma_1: (float) - Dispersion within the subspace
     :param sigma_2: (float) - Parameter that measures how much the subspaces will cross each other (the greater,
                     more the subspaces will cross each other)
     :param dim_space: (integer) - points dimensionality
-    :param set_size: (integer) - subspace dimensionality + 2
+    :param l: (integer) - subspace dimensionality
     :return: (2d array[float], Nxd) - Points in R^d
     """
+
+    assert (l >= 2), "Wrong set size!"
     for i in range(0, K):
         c = np.random.randn(dim_space, 1)
 
-        basis = np.linalg.qr(np.random.randn(dim_space, set_size))[0]
-        new_points = basis.dot(sigma_2*np.random.randn(set_size, population_vec[i])) + c
+        basis = np.linalg.qr(np.random.randn(dim_space, l - 2))[0]
+        new_points = basis.dot(sigma_2*np.random.randn(l - 2, n)) + c
         new_points = new_points.T
         if 'P' not in locals():
             P = new_points
@@ -100,7 +97,12 @@ def subspace_generator(K, population_vec, sigma_1, sigma_2, dim_space, set_size)
 
     P += sigma_1*np.random.rand(P.shape[0], P.shape[1])
 
-    return P
+    gt = []
+    for i in range(K):
+        gt.extend([i for _ in range(n)])
+    ground_truth = np.array(gt)
+
+    return P, ground_truth
 
 # Generate K clusters where each cluster contains n points uniformly distributed on a sphere of radius
 # r+N(0,sigma^2) in R^dim_ambient_space
@@ -132,7 +134,7 @@ def generate_sphere_surface(K, n, r, sigma, dim_ambient_space):
 # r+N(0,sigma^2) in R^dim_ambient_space
 def generate_unif_ball(K, n, r, sigma, dim_ambient_space):
     # generate uniform centers with range = [-1,1]
-    centers= np.zeros(shape=(K,dim_ambient_space))
+    centers= np.zeros(shape=(K, dim_ambient_space))
     for i in range(K):
         centers[i,:] = np.random.uniform(-1, 1, dim_ambient_space)
 

@@ -1,4 +1,4 @@
-import sklearn.metrics.pairwise as skl
+import sklearn.metrics as skl
 import numpy as np
 import sdp_solvers
 
@@ -76,6 +76,78 @@ def purity(lb, gt, type="ave"):
         return np.min(h)
 
 
+def SI(C, lb):
+    """
+    Compute silhouette score of a labeling
+
+    :param C: (2d array[float], NxN) - Weight matrix from the data (N points)
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :return: (float) - score
+    """
+    return skl.silhouette_score(C, lb, metric='precomputed')
+
+
+def CH(P, lb):
+    """
+    Compute Calinski-Harabaz Index of a labeling
+
+    :param P: (2d array[float], Nxdim) - Clustered points
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :return: (float) - CH index
+    """
+    return skl.calinski_harabaz_score(P, lb)
+
+
+def DB(P, lb):
+    """
+    Compute the Davies-Bouldin Index of a labeling
+
+    :param P: (2d array[float], Nxdim) - Clustered points
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :return: (float) - DB index
+    """
+
+    labels = np.unique(lb)
+    K = len(labels)
+
+    c = np.matrix([np.mean(P[np.nonzero(lb == i)[0], :], axis=0) for i in range(K)])
+    mean_dist_to_centers = [np.mean(skl.pairwise.pairwise_distances(P[np.nonzero(lb == i)[0], :], c[i]))
+                            for i in range(K)]
+    dist_center_to_center = skl.pairwise.pairwise_distances(c)
+
+    score = np.zeros([K, K])
+    for i in range(K):
+        for j in range(K):
+            if i != j:
+                score[i, j] = (mean_dist_to_centers[i] + mean_dist_to_centers[j]) / dist_center_to_center[i, j]
+
+    return np.mean(np.max(score, axis=0))
+
+
+def DU(P, lb):
+    """
+    Compute the Dunn Index of a labeling
+
+    :param P: (2d array[float], Nxdim) - Clustered points
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :return: (float) - DU index
+    """
+
+    labels = np.unique(lb)
+    K = len(labels)
+
+    numerator = np.inf * np.ones([K, K])
+    for i in range(K):
+        for j in range(K):
+            if i != j:
+                numerator[i, j] = np.min(skl.pairwise.pairwise_distances(P[np.nonzero(lb == i)[0], :],
+                                                                         P[np.nonzero(lb == j)[0], :]))
+
+    denominator = np.max([np.max(skl.pairwise.pairwise_distances(P[np.nonzero(lb == j)[0], :])) for j in range(K)])
+
+    return np.min(numerator) / denominator
+
+
 # CLUSTERING METHODS USING SDP SOLVERS =================================================================================
 def iterate_sdp(C, K, solver='admm', num_max_it=100):
     """
@@ -96,7 +168,7 @@ def iterate_sdp(C, K, solver='admm', num_max_it=100):
         X_int = np.copy(X)
 
         if solver == 'admm':
-            C = skl.pairwise_distances(V, metric='sqeuclidean')
+            C = skl.pairwise.pairwise_distances(V, metric='sqeuclidean')
             X, _, elapsed_time, _ = sdp_solvers.maxkcut_admm_solver(C, K)
         elif solver == 'ipm':
             X, _, elapsed_time = sdp_solvers.maxkhypercut_ipm_solver(V, K, 2)
@@ -125,12 +197,12 @@ def sdp_clustering(P, K, l=2, solver='admm', delta=0, do_iterate=False):
     :param do_iterate: (boolean) - Iterate clustering
     :return: (1d array[integer]) - Final labeling (clustering)
     """
-    C = skl.pairwise_distances(P, metric='sqeuclidean')
+    C = skl.pairwise.pairwise_distances(P, metric='sqeuclidean')
     if do_iterate:
         X, _, _ = iterate_sdp(C, K, solver=solver)
     else:
         if solver == 'admm':
-            C = skl.pairwise_distances(P, metric='sqeuclidean')
+            C = skl.pairwise.pairwise_distances(P, metric='sqeuclidean')
             X, _, _, _ = sdp_solvers.maxkcut_admm_solver(C, K)
         elif solver == 'ipm':
             X, _, _ = sdp_solvers.maxkhypercut_ipm_solver(P, K, l, delta=delta)
@@ -212,7 +284,7 @@ def nearest_neighbours(V, K, post_processing=True, max_tol=100):
     P = np.random.randn(N, K)
     P /= np.linalg.norm(P, axis=0)
 
-    lb = np.argmin(skl.pairwise_distances(P.T, V), axis=0)
+    lb = np.argmin(skl_pairwise.pairwise_distances(P.T, V), axis=0)
     if post_processing:
         num_attempts = 0
         prev_len_ind = 0
@@ -221,7 +293,7 @@ def nearest_neighbours(V, K, post_processing=True, max_tol=100):
             new_P = np.random.randn(N, len(ind_non_used))
             new_P /= np.linalg.norm(new_P, axis=0)
             P[:, ind_non_used] = new_P
-            lb = np.argmin(skl.pairwise_distances(P.T, V), axis=0)
+            lb = np.argmin(skl_pairwise.pairwise_distances(P.T, V), axis=0)
             if prev_len_ind <= len(ind_non_used):
                 num_attempts += 1
                 prev_len_ind = len(ind_non_used)

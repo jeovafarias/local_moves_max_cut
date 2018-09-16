@@ -5,7 +5,7 @@ import scipy.optimize as opt
 from sklearn.decomposition import PCA
 
 
-def plot_data(P, K, cl, set_size,
+def plot_data(P, K, cl, l,
               show_data=True, save_to_file=False, file_name='foo', title='',
               show_legend=False, normalize=False, gt=''):
     N, dim_space = P.shape
@@ -40,7 +40,7 @@ def plot_data(P, K, cl, set_size,
         if save_to_file:
             if title == '':
                 plt.suptitle('Total number of points: %d | Set Size: %d '
-                             % (P.shape[0], set_size), fontsize=14, fontweight='bold')
+                             % (P.shape[0], l), fontsize=14, fontweight='bold')
             else:
                 plt.suptitle(title, fontsize=14, fontweight='bold')
             plt.savefig(file_name + '.png', bbox_inches="tight")
@@ -89,7 +89,7 @@ def plot_matrix(M, show_data=True, save_to_file=False, file_name='foo', title=''
             plt.close()
 
 
-def visualize_binaries(P, X, K, ground_truth, set_size, dim_space, elapsed_time, num_sample_pts=3,
+def visualize_binaries(P, X, K, ground_truth, l, dim_space, elapsed_time, num_sample_pts=3,
                        show_data=True, save_to_file=False, file_name='foo'):
 
     assert (dim_space in (2, 3))
@@ -143,8 +143,8 @@ def visualize_binaries(P, X, K, ground_truth, set_size, dim_space, elapsed_time,
             ax.set_aspect('equal')
             axis.append(ax)
     fig.colorbar(im, ax=axis, ticks=[-1, 0, 1], orientation='horizontal')
-    plt.suptitle('Total number of points: %d | Set Size: %d \n Calculation Time: %.3f s'
-                 % (P.shape[0], set_size, elapsed_time),
+    plt.suptitle('Total number of points: %d | l: %d \n Calculation Time: %.3f s'
+                 % (P.shape[0], l, elapsed_time),
                  fontsize=14, fontweight='bold')
 
     if save_to_file:
