@@ -5,7 +5,7 @@ import itertools
 
 
 # CLUSTERING ASSESSMENT TOOLS ==========================================================================================
-def stats_clustering_pairwise(P, C, lb, gt):
+def stats_clustering_pairwise(C, lb, gt, P=None, use_other_measures=False):
     """
     Compute the purity, the min purity, the clustering energy and the energy percentage of a partition (clustering)
     whose weights are pairwise
@@ -20,9 +20,13 @@ def stats_clustering_pairwise(P, C, lb, gt):
              (float) - DB index,
              (float) - DU index
     """
-    return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
-           energy_clustering_pairwise(C, lb), percentage_energy_clustering_pairwise(C, lb), \
-           CH(P, lb), SI(C, lb), DB(P, lb), DU(P, lb)
+    if use_other_measures:
+        return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
+                energy_clustering_pairwise(C, lb), percentage_energy_clustering_pairwise(C, lb), \
+                CH(P, lb), SI(C, lb), DB(P, lb), DU(P, lb)
+    else:
+        return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
+               energy_clustering_pairwise(C, lb), percentage_energy_clustering_pairwise(C, lb)
 
 
 def stats_clustering_high_order(E, w, lb, gt):

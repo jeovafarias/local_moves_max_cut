@@ -144,7 +144,7 @@ def run_test(n, k, sigma, min_dist, num_trials, random_init, use_previous_datase
                                         move_type="ab", ab_sequence=ab_sequence,
                                         num_max_it=num_max_it, use_IPM=use_IPM)
         ab_pur[t], ab_min_pur[t], ab_ene[t], ab_per[t], ab_ch[t], ab_si[t], ab_db[t], ab_du[t] \
-            = cu.stats_clustering_pairwise(P, C, lb_ab, ground_truth)
+            = cu.stats_clustering_pairwise(C, lb_ab, ground_truth, P)
         ab_tim[t] = time.time() - start_t
         print time.time() - start_t
 
@@ -169,7 +169,7 @@ def run_test(n, k, sigma, min_dist, num_trials, random_init, use_previous_datase
         start_t = time.time()
         lb_ls, ls_it[t] = cu.local_search(C, k, lb_init, num_max_it=num_max_it)
         ls_pur[t], ls_min_pur[t], ls_ene[t], ls_per[t], ls_ch[t], ls_si[t], ls_db[t], ls_du[t]\
-            = cu.stats_clustering_pairwise(P, C, lb_ls, ground_truth)
+            = cu.stats_clustering_pairwise(C, lb_ls, ground_truth, P)
         ls_tim[t] = time.time() - start_t
         # print time.time() - start_t
 
@@ -226,7 +226,7 @@ def run_test(n, k, sigma, min_dist, num_trials, random_init, use_previous_datase
     save_data(props, dirpath, filename="ls_results")
 
     gt_pur, gt_min_pur, gt_ene, gt_per, gt_ch, gt_si, gt_db, gt_du \
-        = cu.stats_clustering_pairwise(P, C, ground_truth, ground_truth)
+        = cu.stats_clustering_pairwise(C, ground_truth, ground_truth, P)
     props = {"purities": gt_pur, "min_purities": gt_min_pur, "energies": gt_ene, "percentages_energy": gt_per,
               "CH": gt_ch, "SI": gt_si,  "DB": gt_db, "DU": gt_du, "times": 0, "iterations": 0}
     save_data(props, dirpath, filename="gt_results")

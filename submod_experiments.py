@@ -125,19 +125,22 @@ def run_test(P, K, ground_truth, num_trials, random_init, dir_name='test'):
         start_t = time.time()
         lb_ae_sub_dict = sa.localSearchSubmod(V,E,w,K,lb_dict,moveType="aexp",maxIt=num_max_it)
         lb_ae_sub = [lb_ae_sub_dict[i] for i in range(N)]
-        ae_sub_pur_t[t], ae_sub_ene_t[t], ae_sub_per_t[t] = cu.stats_clustering_high_order(C, lb_ae_sub, ground_truth)
+        ae_sub_pur_t[t], _, ae_sub_ene_t[t], ae_sub_per_t[t] = \
+            cu.stats_clustering_pairwise(C, lb_ae_sub, ground_truth, use_other_measures=False)
         ae_sub_tim_t[t] = time.time() - start_t
 
         start_t = time.time()
         lb_ae_ran_dict = sa.localSearchSubmod(V,E,w,K,lb_dict,moveType="aexp-ran",maxIt=num_max_it)
         lb_ae_ran = [lb_ae_ran_dict[i] for i in range(N)]
-        ae_ran_pur_t[t], ae_ran_ene_t[t], ae_ran_per_t[t] = cu.stats_clustering_high_order(C, lb_ae_ran, ground_truth)
+        ae_ran_pur_t[t], _, ae_ran_ene_t[t], ae_ran_per_t[t] = \
+            cu.stats_clustering_pairwise(C, lb_ae_ran, ground_truth, use_other_measures=False)
         ae_ran_tim_t[t] = time.time() - start_t
 
         start_t = time.time()
         lb_ae_2b_dict = sa.localSearchSubmod(V,E,w,K,lb_dict,moveType="aexp-2b",maxIt=num_max_it)
         lb_ae_2b = [lb_ae_2b_dict[i] for i in range(N)]
-        ae_2b_pur_t[t], ae_2b_ene_t[t], ae_2b_per_t[t] = cu.stats_clustering_high_order(C, lb_ae_2b, ground_truth)
+        ae_2b_pur_t[t], _, ae_2b_ene_t[t], ae_2b_per_t[t] = \
+            cu.stats_clustering_pairwise(C, lb_ae_2b, ground_truth, use_other_measures=False)
         ae_2b_tim_t[t] = time.time() - start_t
 
 ##        start_t = time.time()
