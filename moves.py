@@ -50,7 +50,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
                         # print("Expanding/shrinking (%d, %d), Current Class.: %s" % (alpha, beta, lb))
                         new_lb = aexp_bshrk_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
 
-                    ene = cu.energy_clustering(C, new_lb)
+                    ene = cu.energy_clustering_pairwise(C, new_lb)
                     if ene >= max_ene:
                         max_ene = ene
                         lb = new_lb
@@ -84,7 +84,7 @@ def abswap_sdp(C_initial, lb, alpha, beta, use_IPM=False):
     
     # Solve & round ----------------------------------------------------------------------------------------------------
     try:
-        int_sol = solve_round_sdp(C, use_IPM=use_IPM)
+        int_sol = solvers.solve_round_sdp(C, use_IPM=use_IPM)
     except Exception:
         return lb
     
@@ -109,7 +109,7 @@ def aexp_sdp(C_initial, lb, alpha, use_IPM=False):
         return lb
 
     # Solve & round ----------------------------------------------------------------------------------------------------
-    int_sol = solve_round_sdp(C, use_IPM=use_IPM)
+    int_sol = solvers.solve_round_sdp(C, use_IPM=use_IPM)
 
     # Update labels ----------------------------------------------------------------------------------------------------
     non_alpha_indices = np.nonzero(lb != alpha)[0]
@@ -176,38 +176,3 @@ def create_expansion_gadget(C_initial, lb, alpha):
                 C[-1, i] += C[i, j]
 
     return C
-
-
-def solve_round_sdp(C, use_IPM=False):
-    """
-    Solve the Max-Cut SDP problem represented by C
-
-    :param C: (2d array[float], NxN) - Max-Cut weight matrix
-    :param use_IPM: (boolean) - Use Interior Point Method to solve the SDP problem
-    :return: (1d array[integer]) - Approximate optimal partition of the graph represented by C
-    """
-    # Solve SDP using the Interior Point Method (Picos) or ADMM --------------------------------------------------------
-    if use_IPM:
-        X, _, _ = solvers.maxcut_ipm_solver(C)
-    else:
-        X, _, _, _ = solvers.maxkcut_admm_solver(C, 2)
-
-    # dv.plot_matrix(X)
-
-    # Embedding --------------------------------------------------------------------------------------------------------
-    V = np.linalg.cholesky(X + 1e-9 * np.trace(X) * np.eye(X.shape[0])) 
-
-    # Select the best cutting plane (the one that maximizes the objective) ---------------------------------------------
-    max_ene = 0
-    num_rounding_trials = max(100, np.floor_divide(C.shape[0], 2))
-    best = solvers.hyper_plane_rounding(V)
-    for i in range(num_rounding_trials):
-
-        v = solvers.hyper_plane_rounding(V)
-
-        ene = cu.energy_clustering(C, v)
-        if ene > max_ene:
-            best = v
-            max_ene = ene
-
-    return best

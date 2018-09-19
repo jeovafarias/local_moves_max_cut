@@ -125,19 +125,19 @@ def run_test(P, K, ground_truth, num_trials, random_init, dir_name='test'):
         start_t = time.time()
         lb_ae_sub_dict = sa.localSearchSubmod(V,E,w,K,lb_dict,moveType="aexp",maxIt=num_max_it)
         lb_ae_sub = [lb_ae_sub_dict[i] for i in range(N)]
-        ae_sub_pur_t[t], ae_sub_ene_t[t], ae_sub_per_t[t] = cu.stats_clustering(C, lb_ae_sub, ground_truth)
+        ae_sub_pur_t[t], ae_sub_ene_t[t], ae_sub_per_t[t] = cu.stats_clustering_high_order(C, lb_ae_sub, ground_truth)
         ae_sub_tim_t[t] = time.time() - start_t
 
         start_t = time.time()
         lb_ae_ran_dict = sa.localSearchSubmod(V,E,w,K,lb_dict,moveType="aexp-ran",maxIt=num_max_it)
         lb_ae_ran = [lb_ae_ran_dict[i] for i in range(N)]
-        ae_ran_pur_t[t], ae_ran_ene_t[t], ae_ran_per_t[t] = cu.stats_clustering(C, lb_ae_ran, ground_truth)
+        ae_ran_pur_t[t], ae_ran_ene_t[t], ae_ran_per_t[t] = cu.stats_clustering_high_order(C, lb_ae_ran, ground_truth)
         ae_ran_tim_t[t] = time.time() - start_t
 
         start_t = time.time()
         lb_ae_2b_dict = sa.localSearchSubmod(V,E,w,K,lb_dict,moveType="aexp-2b",maxIt=num_max_it)
         lb_ae_2b = [lb_ae_2b_dict[i] for i in range(N)]
-        ae_2b_pur_t[t], ae_2b_ene_t[t], ae_2b_per_t[t] = cu.stats_clustering(C, lb_ae_2b, ground_truth)
+        ae_2b_pur_t[t], ae_2b_ene_t[t], ae_2b_per_t[t] = cu.stats_clustering_high_order(C, lb_ae_2b, ground_truth)
         ae_2b_tim_t[t] = time.time() - start_t
 
 ##        start_t = time.time()
@@ -211,6 +211,7 @@ if __name__ == "__main__":
     random_init = True
     use_prev_p = 0
     shuffle_data = 0
+    l = 3
 
     n = 10
     K = 3
@@ -219,8 +220,8 @@ if __name__ == "__main__":
         print('EXP. %d - 1 =================================================================================' % (e + 1))
         sigma_1 = 1
         sigma_2 = sigmas[e]
-        params_data = {'sigma_1': 1, 'sigma_2': sigma_2, 'K': K, 'dim_space': 2, 'pop_interv': [n, n],
-                   'use_prev_p': use_prev_p, 'shuffle': shuffle_data}
+        params_data = {'sigma_1': 1, 'sigma_2': sigma_2, 'K': K, 'dim_space': 2, 'n': n,
+                   'use_prev_p': use_prev_p, 'shuffle': shuffle_data, 'l': l}
         P, ground_truth = dg.generate_data_random(params_data)
         run_test(P, K, ground_truth, num_trials, random_init, dir_name=dir_name)
     print("SET FINISHED ========================================================================== \n")
@@ -232,8 +233,8 @@ if __name__ == "__main__":
         print('EXP. %d - 2 =================================================================================' % (e + 1))
         sigma_1 = 1
         sigma_2 = sigmas[e]
-        params_data = {'sigma_1': 1, 'sigma_2': sigma_2, 'K': K, 'dim_space': 2, 'pop_interv': [n, n],
-                   'use_prev_p': use_prev_p, 'shuffle': shuffle_data}
+        params_data = {'sigma_1': 1, 'sigma_2': sigma_2, 'K': K, 'dim_space': 2, 'n': n,
+                   'use_prev_p': use_prev_p, 'shuffle': shuffle_data, 'l': l}
         P, ground_truth = dg.generate_data_random(params_data)
         run_test(P, K, ground_truth, num_trials, random_init, dir_name=dir_name)
     print("SET FINISHED ========================================================================== \n")

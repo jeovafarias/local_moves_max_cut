@@ -51,34 +51,30 @@ def maxcut_ipm_solver(C):
     return np.array(X.value), 0.5 * max_cut.obj_value(), elapsed_time
 
 
-def maxkhypercut_ipm_solver(P, K, l, delta=0, squared_dist=False, use_clique_expansion=False):
+def maxkhypercut_ipm_solver(E, w, K, N, l):
     """
     Solve Max-K-Hypercut SDP problem with Interior Point Method
 
-    :param P: (2d array[float], Nxd) - Dataset of N points in d dimensions
+    :param E: (List of list of Integers) - Hypergraph vertices
+    :param w: (1d array[float], |E|) - Hypergraph weights
     :param K: (integer) - Number of clusters
+    :param N: (integer) - Number of data points represented by the hypergraph in E
     :param l: (integer) - Subspace dimension
-    :param delta: (float) - parameter used in the hypergraph reduction sampling
-    :param squared_dist: (boolean) - use squared distances to calculate volumes
-    :param use_clique_expansion: (boolean) - use the clique expansion technique
     :return: (1d array[integer]) - Partition,
              (1d array[integer]) - Final objective value,
              (float) - Final elapsed time
     """
-    N = P.shape[0]
 
-    # Calculate Volumes ================================================================================================
-    C = np.array(list(itertools.combinations(range(N), l)))  # All possible combinations of size set_size for N p
-    w = np.array([cu.compute_volume(P, s, squared_dist) for s in C])  # Vector of weights given by each subset
-
-    # Clique Expansion =================================================================================================
-    if use_clique_expansion:
-        C, w = clique_expansion(C, w, N)
-        l = 2
-
-    # Sampling Procedure ===============================================================================================
-    if delta != 0:
-        C, w = graph_sampling(C, w, N)
+    # # Old code =======================================================================================================
+    # C = np.array(list(itertools.combinations(range(N), l)))  # All possible combinations of size set_size for N p
+    # w = np.array([cu.compute_volume(P, s, squared_dist) for s in C])  # Vector of weights given by each subset
+    #
+    # if use_clique_expansion:
+    #     E, w = clique_expansion(E, w, N)
+    #     l = 2
+    #
+    # if delta != 0:
+    #     E, w = graph_sampling(E, w, delta)
 
     # SDP Creation =====================================================================================================
     cluster_problem = pic.Problem()
@@ -93,8 +89,8 @@ def maxkhypercut_ipm_solver(P, K, l, delta=0, squared_dist=False, use_clique_exp
 
     # Constraint on z
     cluster_problem.add_list_of_constraints(
-        [C1 * pic.tools.sum([1 - X[s[0], s[1]] for s in list(itertools.combinations(C[j], 2))]) > z[j]
-         for j in range(len(C))],
+        [C1 * pic.tools.sum([1 - X[s[0], s[1]] for s in list(itertools.combinations(E[j], 2))]) > z[j]
+         for j in range(len(E))],
         ['i', 'k'],
         '|S_j|, i < k, for all j'
     )
@@ -124,19 +120,27 @@ def maxkhypercut_ipm_solver(P, K, l, delta=0, squared_dist=False, use_clique_exp
     return np.array(X.value), cluster_problem.obj_value(), elapsed_time
 
 
-def clique_expansion(C, w, N):
+def clique_expansion(E, w, N):
     mu = 0.5
     pairs = np.array(list(itertools.combinations(range(N), 2)))
-    new_w = [np.sum([w[index]/mu for c, index in zip(C, range(len(C))) if set(p).issubset(c)]) for p in pairs]
+    new_w = [np.sum([w[index]/mu for c, index in zip(E, range(len(E))) if set(p).issubset(c)]) for p in pairs]
 
     return pairs, np.array(new_w)
 
 
-def graph_sampling(C, w, delta):
+def graph_sampling(E, w, delta):
+    """
+    Sample the hypergraph represented the hyperedges in E with weights w
+
+    :param E: (List of list of Integers) - Hypergraph vertices
+    :param w: (1d array[float], |E|) - Hypergraph weights
+    :param delta: sampling parameter
+    :return:
+    """
     r = int((delta ** (-2)) * 30)
     chosen_idx = np.random.choice(len(w), r, p=w / np.sum(w), replace=True)
-    hist = np.histogram(chosen_idx, bins=range(len(C)))[0]
-    C = C[np.squeeze(np.argwhere(hist != 0))]
+    hist = np.histogram(chosen_idx, bins=range(len(E)))[0]
+    C = E[np.squeeze(np.argwhere(hist != 0))]
     w = hist[np.squeeze(np.argwhere(hist != 0))]
 
     return C, w
@@ -270,6 +274,41 @@ def maxkcut_admm_solver(C, K, num_max_it=5000, epsilon=1e-8, alpha=0):
 
 
 # ROUNDING UTILS =======================================================================================================
+def solve_round_sdp(C, use_IPM=False):
+    """
+    Solve the Max-Cut SDP problem represented by C
+
+    :param C: (2d array[float], NxN) - Max-Cut weight matrix
+    :param use_IPM: (boolean) - Use Interior Point Method to solve the SDP problem
+    :return: (1d array[integer]) - Approximate optimal partition of the graph represented by C
+    """
+    # Solve SDP using the Interior Point Method (Picos) or ADMM --------------------------------------------------------
+    if use_IPM:
+        X, _, _ = maxcut_ipm_solver(C)
+    else:
+        X, _, _, _ = maxkcut_admm_solver(C, 2)
+
+    # dv.plot_matrix(X)
+
+    # Embedding --------------------------------------------------------------------------------------------------------
+    V = np.linalg.cholesky(X + 1e-5 * np.trace(X) * np.eye(X.shape[0]))
+
+    # Select the best cutting plane (the one that maximizes the objective) ---------------------------------------------
+    max_ene = 0
+    num_rounding_trials = max(100, np.floor_divide(C.shape[0], 2))
+    best = hyper_plane_rounding(V)
+    for i in range(num_rounding_trials):
+
+        v = hyper_plane_rounding(V)
+
+        ene = cu.energy_clustering(C, v)
+        if ene > max_ene:
+            best = v
+            max_ene = ene
+
+    return best
+
+
 def hyper_plane_rounding(V):
     """
     Hyper plane rounding algorithm used in Max-Cut SDP problems

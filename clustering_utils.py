@@ -1,12 +1,14 @@
 import sklearn.metrics as skl
 import numpy as np
-import sdp_solvers
+import sdp_solvers as solvers
+import itertools
 
 
 # CLUSTERING ASSESSMENT TOOLS ==========================================================================================
-def stats_clustering(P, C, lb, gt):
+def stats_clustering_pairwise(P, C, lb, gt):
     """
     Compute the purity, the min purity, the clustering energy and the energy percentage of a partition (clustering)
+    whose weights are pairwise
 
     :param C: (2d array[float], NxN) - Weight matrix from the data (N points)
     :param lb: (1d array[integer]) - Labeling to be assessed
@@ -19,12 +21,32 @@ def stats_clustering(P, C, lb, gt):
              (float) - DU index
     """
     return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
-           energy_clustering(C, lb), percentage_energy_clustering(C, lb), CH(P, lb), SI(C, lb), DB(P, lb), DU(P, lb)
+           energy_clustering_pairwise(C, lb), percentage_energy_clustering_pairwise(C, lb), \
+           CH(P, lb), SI(C, lb), DB(P, lb), DU(P, lb)
 
 
-def energy_clustering(C, lb):
+def stats_clustering_high_order(E, w, lb, gt):
     """
-    Compute clustering energy, i.e. the sum of edges cut from the graph
+    Compute the purity, the min purity, the clustering energy and the energy percentage of a partition (clustering)
+
+    :param E: (List of list of Integers) - Hypergraph vertices
+    :param w: (1d array[float], |E|) - Hypergraph weights
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :param gt: (1d array[integer]) - Ground Truth labeling
+    :return: (float) - purity,
+             (float) - clustering energy,
+             (float) - CH index,
+             (float) - Silhouette,
+             (float) - DB index,
+             (float) - DU index
+    """
+    return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
+           energy_clustering_high_order(E, w, lb), percentage_energy_clustering_high_order(E, w, lb)
+
+
+def energy_clustering_pairwise(C, lb):
+    """
+    Compute clustering energy for pairwise clustering, i.e. the sum of edges cut from the graph
 
     :param C: (2d array[float], NxN) - Weight matrix from the data (N points)
     :param lb: (1d array[integer]) - Labeling to be assessed
@@ -39,15 +61,45 @@ def energy_clustering(C, lb):
     return ene
 
 
-def percentage_energy_clustering(C, lb):
+def energy_clustering_high_order(E, w, lb):
     """
-    Compute energy percentage
+    Compute clustering energy in hypergraph clustering, i.e. the sum of edges cut from the hypergraph
+
+    :param E: (List of list of Integers) - Hypergraph vertices
+    :param w: (1d array[float], |E|) - Hypergraph weights
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :return: (float) - clustering energy
+    """
+    num_edges = len(w)
+    ene = 0
+    for i in range(num_edges):
+        labels = np.array([lb[j] for j in E[i]])
+        if not np.all(labels == labels[0]):
+            ene += w[i]
+    return ene
+
+
+def percentage_energy_clustering_pairwise(C, lb):
+    """
+    Compute energy percentage for pairwise clustering
+
+    :param E: (List of list of Integers) - Hypergraph vertices
+    :param w: (1d array[float], |E|) - Hypergraph weights
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :return: (float) - energy percentage
+    """
+    return energy_clustering_pairwise(C, lb) / np.sum(C)
+
+
+def percentage_energy_clustering_high_order(E, w, lb):
+    """
+    Compute energy percentage for hypergraph clustering
 
     :param C: (2d array[float], NxN) - Weight matrix from the data (N points)
     :param lb: (1d array[integer]) - Labeling to be assessed
     :return: (float) - energy percentage
     """
-    return energy_clustering(C, lb) / np.sum(C)
+    return energy_clustering_high_order(E, w, lb) / np.sum(w)
 
 
 def purity(lb, gt, type="ave"):
@@ -165,6 +217,7 @@ def iterate_sdp(C, K, solver='admm', num_max_it=100):
              (integer) - Number of executed SDP iterations
     """
     X = np.zeros_like(C)
+    N = X.shape[0]
     V = np.linalg.cholesky(X + 1e-9 * np.trace(X) * np.eye(X.shape[0]))
     err, num_it_SDP, total_elapsed_time = np.inf, 0, 0
     while num_it_SDP < num_max_it and err > 1e-8:
@@ -172,9 +225,12 @@ def iterate_sdp(C, K, solver='admm', num_max_it=100):
 
         if solver == 'admm':
             C = skl.pairwise.pairwise_distances(V, metric='sqeuclidean')
-            X, _, elapsed_time, _ = sdp_solvers.maxkcut_admm_solver(C, K)
+            X, _, elapsed_time, _ = solvers.maxkcut_admm_solver(C, K)
         elif solver == 'ipm':
-            X, _, elapsed_time = sdp_solvers.maxkhypercut_ipm_solver(V, K, 2)
+            E = np.array(list(itertools.combinations(range(N), 2)))
+            w = np.array([compute_volume(V, s) for s in C])
+
+            X, _, elapsed_time = solvers.maxkhypercut_ipm_solver(E, w, K, N, 2)
 
         V = np.linalg.cholesky(X + 1e-9 * np.trace(X) * np.eye(X.shape[0]))
 
@@ -201,14 +257,21 @@ def sdp_clustering(P, K, l=2, solver='admm', delta=0, do_iterate=False):
     :return: (1d array[integer]) - Final labeling (clustering)
     """
     C = skl.pairwise.pairwise_distances(P, metric='sqeuclidean')
+    N = P.shape[0]
     if do_iterate:
         X, _, _ = iterate_sdp(C, K, solver=solver)
     else:
         if solver == 'admm':
             C = skl.pairwise.pairwise_distances(P, metric='sqeuclidean')
-            X, _, _, _ = sdp_solvers.maxkcut_admm_solver(C, K)
+            X, _, _, _ = solvers.maxkcut_admm_solver(C, K)
         elif solver == 'ipm':
-            X, _, _ = sdp_solvers.maxkhypercut_ipm_solver(P, K, l, delta=delta)
+            E = np.array(list(itertools.combinations(range(N), l)))
+            w = np.array([compute_volume(P, s) for s in C])
+
+            if delta != 0:
+                E, w = solvers.graph_sampling(E, w, delta)
+
+            X, _, _ = solvers.maxkhypercut_ipm_solver(E, w, K, N, l)
 
     V = np.linalg.cholesky(X + 1e-9 * np.trace(X) * np.eye(X.shape[0]))
 
@@ -219,7 +282,7 @@ def sdp_clustering(P, K, l=2, solver='admm', delta=0, do_iterate=False):
 
         lb_nn = nearest_neighbours(V, K)
 
-        energy = energy_clustering(C, lb_nn)
+        energy = energy_clustering_pairwise(C, lb_nn)
         if energy < min_ene:
             best_lb_nn = lb_nn
             min_ene = energy
@@ -315,7 +378,4 @@ def compute_volume(P, ind, squared_dist=False):
     if squared_dist:
         return np.abs(np.linalg.det(np.dot(M, M.T)))
     else:
-        return np.abs(np.sqrt(np.linalg.det(np.dot(M, M.T))))
-
-
-
+        return np.sqrt(np.abs(np.linalg.det(np.dot(M, M.T))))

@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     lb_ae = moves.large_move_maxcut(C, K, lb_init, move_type="ae", ab_sequence=ab_sequence,
                                     num_max_it=num_max_it, use_IPM=use_IPM)
-    pur, ene_cl, per_ene_cl = cu.stats_clustering(C, lb_ae, ground_truth)
+    pur, ene_cl, per_ene_cl = cu.stats_clustering_pairwise(C, lb_ae, ground_truth)
     print("\n> Alpha Expansion")
     print("  - Purity: %.4f" % pur)
     print("  - Energy Clustering: %.4f" % ene_cl)
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     # print("  - Percentage Energy: %.4f %%" % per_ene_cl)
 
     lb_ls = cu.local_search(C, K, lb_init)
-    pur, ene_cl, per_ene_cl = cu.stats_clustering(C, lb_ls, ground_truth)
+    pur, ene_cl, per_ene_cl = cu.stats_clustering_pairwise(C, lb_ls, ground_truth)
     print("\n> Local Search")
     print("  - Purity: %.4f" % pur)
     print("  - Energy Clustering: %.4f" % ene_cl)

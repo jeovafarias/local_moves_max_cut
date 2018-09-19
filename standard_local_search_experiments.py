@@ -60,7 +60,7 @@ def run_test(n, k, sigma, num_trials, use_D31=False):
         start_t = time.time()
         lb_ls, ls_it[t] = cu.local_search(C, k, lb_init, num_max_it=20)
         ls_pur[t], ls_min_pur[t], ls_ene[t], ls_per[t], ls_ch[t], ls_si[t], ls_db[t], ls_du[t]\
-            = cu.stats_clustering(P, C, lb_ls, ground_truth)
+            = cu.stats_clustering_pairwise(P, C, lb_ls, ground_truth)
         ls_tim[t] = time.time() - start_t
 
     props = {"purities": ls_pur, "min_purities": ls_min_pur, "energies": ls_ene, "percentages_energy": ls_per,
