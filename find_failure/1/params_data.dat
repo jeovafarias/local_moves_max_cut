@@ -1,8 +1,8 @@
 param|value
-n|5
-k|5
+n|3
+k|20
 dim_space|2
 l|2
 sigma_1|1.0000
-sigma_2|0.1500
-min_dist|0.1000
+sigma_2|0.0200
+min_dist|0.2000

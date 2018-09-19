@@ -1,0 +1,249 @@
+\documentclass{article}
+\usepackage[showframe]{geometry}
+
+\geometry{
+paperwidth=42.6cm,
+paperheight=16cm,
+margin=0.5cm
+}
+
+\usepackage{multirow}
+\usepackage{booktabs,dcolumn,array}                 
+\usepackage{graphicx}
+\usepackage{datatool}
+\usepackage{bashful}
+
+\newcommand{\widthup}{5cm}
+\newcommand{\widthbot}{2cm}
+
+\newcommand{\ida}{3}
+\newcommand{\idb}{4}
+\newcommand{\idc}{0} %
+\newcommand{\idd}{1} %
+\newcommand{\ide}{2} %
+% \newcommand{\idf}{2} %
+
+\DTLsetseparator{|}%
+\DTLloaddb{ls1}{\ida/ls_results.dat}
+\DTLloaddb{ls2}{\idb/ls_results.dat}
+\DTLloaddb{ls3}{\idc/ls_results.dat}
+\DTLloaddb{ls4}{\idd/ls_results.dat}
+\DTLloaddb{ls5}{\ide/ls_results.dat}
+% \DTLloaddb{ls6}{\idf/ls_results.dat}
+
+\DTLloaddb{ab1}{\ida/ab_results.dat}
+\DTLloaddb{ab2}{\idb/ab_results.dat}
+\DTLloaddb{ab3}{\idc/ab_results.dat}
+\DTLloaddb{ab4}{\idd/ab_results.dat}
+\DTLloaddb{ab5}{\ide/ab_results.dat}
+% \DTLloaddb{ab6}{\idf/ab_results.dat}
+
+
+\begin{document}
+
+\begin{table}
+
+\begin{tabular}{ccccccccccccccccccccccccc}
+ 	 & \multicolumn{2}{c}{\includegraphics[width = \widthup]{\ida/GT.png}} 
+	 & \multicolumn{2}{c}{\includegraphics[width = \widthup]{\idb/GT.png}} 
+	 & \multicolumn{2}{c}{\includegraphics[width = \widthup]{\idc/GT.png}}
+	 & \multicolumn{2}{c}{\includegraphics[width = \widthup]{\idd/GT.png}}
+	 & \multicolumn{2}{c}{\includegraphics[width = \widthup]{\ide/GT.png}}\\
+	 \cmidrule[1pt](rl){2-3}\cmidrule[1pt](rl){4-5}\cmidrule[1pt](rl){6-7}\cmidrule[1pt](rl){8-9}\cmidrule[1pt](rl){10-11}\cmidrule[1pt](rl){12-13}
+	 \textbf{Mean (\DTLfetch{ls1}{prop}{exp}{value} trials)}
+	 & LS & AB 
+	 & LS & AB
+	 & LS & AB
+	 & LS & AB
+	 & LS & AB\\\midrule
+	 Purity 		
+        & \shortstack{$\DTLfetch{ls1}{prop}{pur}{value} \pm \DTLfetch{ls1}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{pur_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{pur}{value} \pm \DTLfetch{ab1}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{pur_max}{value}}
+                                                                                                    
+        & \shortstack{$\DTLfetch{ls2}{prop}{pur}{value} \pm \DTLfetch{ls2}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ls2}{prop}{pur_max}{value}}
+        & \shortstack{$\DTLfetch{ab2}{prop}{pur}{value} \pm \DTLfetch{ab2}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ab2}{prop}{pur_max}{value}}
+                                                                                                    
+        & \shortstack{$\DTLfetch{ls3}{prop}{pur}{value} \pm \DTLfetch{ls3}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ls3}{prop}{pur_max}{value}}
+        & \shortstack{$\DTLfetch{ab3}{prop}{pur}{value} \pm \DTLfetch{ab3}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ab3}{prop}{pur_max}{value}}
+                                                                                                
+        & \shortstack{$\DTLfetch{ls4}{prop}{pur}{value} \pm \DTLfetch{ls4}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ls4}{prop}{pur_max}{value}}
+        & \shortstack{$\DTLfetch{ab4}{prop}{pur}{value} \pm \DTLfetch{ab4}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ab4}{prop}{pur_max}{value}}
+                                                                                                    
+        & \shortstack{$\DTLfetch{ls5}{prop}{pur}{value} \pm \DTLfetch{ls5}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ls5}{prop}{pur_max}{value}}
+        & \shortstack{$\DTLfetch{ab5}{prop}{pur}{value} \pm \DTLfetch{ab5}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ab5}{prop}{pur_max}{value}}
+                                                                                                
+%         & \shortstack{$\DTLfetch{ls6}{prop}{pur}{value} \pm \DTLfetch{ls6}{prop}{pur_std}{value}$ 	 \\ Max: \DTLfetch{ls6}{prop}{pur_max}{value}}
+%         & \shortstack{$\DTLfetch{ab6}{prop}{pur}{value} \pm \DTLfetch{ab6}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ab6}{prop}{pur_max}{value}}
+        \\\midrule
+        
+	 Min Purity 		
+        & \shortstack{$\DTLfetch{ls1}{prop}{pur_min}{value} \pm \DTLfetch{ls1}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{pur_min_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{pur_min}{value} \pm \DTLfetch{ab1}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{pur_min_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls2}{prop}{pur_min}{value} \pm \DTLfetch{ls2}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ls2}{prop}{pur_min_max}{value}}
+        & \shortstack{$\DTLfetch{ab2}{prop}{pur_min}{value} \pm \DTLfetch{ab2}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ab2}{prop}{pur_min_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls3}{prop}{pur_min}{value} \pm \DTLfetch{ls3}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ls3}{prop}{pur_min_max}{value}}
+        & \shortstack{$\DTLfetch{ab3}{prop}{pur_min}{value} \pm \DTLfetch{ab3}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ab3}{prop}{pur_min_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls4}{prop}{pur_min}{value} \pm \DTLfetch{ls4}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ls4}{prop}{pur_min_max}{value}}
+        & \shortstack{$\DTLfetch{ab4}{prop}{pur_min}{value} \pm \DTLfetch{ab4}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ab4}{prop}{pur_min_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls5}{prop}{pur_min}{value} \pm \DTLfetch{ls5}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ls5}{prop}{pur_min_max}{value}}
+        & \shortstack{$\DTLfetch{ab5}{prop}{pur_min}{value} \pm \DTLfetch{ab5}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ab5}{prop}{pur_min_max}{value}}
+
+%         & \shortstack{$\DTLfetch{ls6}{prop}{pur_min}{value} \pm \DTLfetch{ls6}{prop}{pur_min_std}{value}$ 	 \\ Max: \DTLfetch{ls6}{prop}{pur_min_max}{value}}
+%         & \shortstack{$\DTLfetch{ab6}{prop}{pur_min}{value} \pm \DTLfetch{ab6}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ab6}{prop}{pur_min_max}{value}}
+        \\\midrule
+
+	 Energy                                                                                                                                                                                                                                                                           
+        & \shortstack{$\DTLfetch{ls1}{prop}{ene}{value} \pm \DTLfetch{ls1}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{ene_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{ene}{value} \pm \DTLfetch{ab1}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{ene_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls2}{prop}{ene}{value} \pm \DTLfetch{ls2}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ls2}{prop}{ene_max}{value}}
+        & \shortstack{$\DTLfetch{ab2}{prop}{ene}{value} \pm \DTLfetch{ab2}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ab2}{prop}{ene_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls3}{prop}{ene}{value} \pm \DTLfetch{ls3}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ls3}{prop}{ene_max}{value}}
+        & \shortstack{$\DTLfetch{ab3}{prop}{ene}{value} \pm \DTLfetch{ab3}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ab3}{prop}{ene_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls4}{prop}{ene}{value} \pm \DTLfetch{ls4}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ls4}{prop}{ene_max}{value}}
+        & \shortstack{$\DTLfetch{ab4}{prop}{ene}{value} \pm \DTLfetch{ab4}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ab4}{prop}{ene_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls5}{prop}{ene}{value} \pm \DTLfetch{ls5}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ls5}{prop}{ene_max}{value}}
+        & \shortstack{$\DTLfetch{ab5}{prop}{ene}{value} \pm \DTLfetch{ab5}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ab5}{prop}{ene_max}{value}}
+
+%         & \shortstack{$\DTLfetch{ls6}{prop}{ene}{value} \pm \DTLfetch{ls6}{prop}{ene_std}{value}$ 	 \\ Max: \DTLfetch{ls6}{prop}{ene_max}{value}}
+%         & \shortstack{$\DTLfetch{ab6}{prop}{ene}{value} \pm \DTLfetch{ab6}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ab6}{prop}{ene_max}{value}}
+        \\\midrule        
+        
+	 Energy Percentage (\%)                                                                                                                                                                                                                                                                           
+        & \shortstack{$\DTLfetch{ls1}{prop}{per}{value} \pm \DTLfetch{ls1}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{per_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{per}{value} \pm \DTLfetch{ab1}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{per_max}{value}}
+                                                                                                                                
+        & \shortstack{$\DTLfetch{ls2}{prop}{per}{value} \pm \DTLfetch{ls2}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ls2}{prop}{per_max}{value}}
+        & \shortstack{$\DTLfetch{ab2}{prop}{per}{value} \pm \DTLfetch{ab2}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ab2}{prop}{per_max}{value}}
+                                                                                                                                
+        & \shortstack{$\DTLfetch{ls3}{prop}{per}{value} \pm \DTLfetch{ls3}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ls3}{prop}{per_max}{value}}
+        & \shortstack{$\DTLfetch{ab3}{prop}{per}{value} \pm \DTLfetch{ab3}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ab3}{prop}{per_max}{value}}
+                                                                                                                                
+        & \shortstack{$\DTLfetch{ls4}{prop}{per}{value} \pm \DTLfetch{ls4}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ls4}{prop}{per_max}{value}}
+        & \shortstack{$\DTLfetch{ab4}{prop}{per}{value} \pm \DTLfetch{ab4}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ab4}{prop}{per_max}{value}}
+                                                                                                                                
+        & \shortstack{$\DTLfetch{ls5}{prop}{per}{value} \pm \DTLfetch{ls5}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ls5}{prop}{per_max}{value}}
+        & \shortstack{$\DTLfetch{ab5}{prop}{per}{value} \pm \DTLfetch{ab5}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ab5}{prop}{per_max}{value}}
+                                                                                                                                
+%         & \shortstack{$\DTLfetch{ls6}{prop}{per}{value} \pm \DTLfetch{ls6}{prop}{per_std}{value}$ 	 \\ Max: \DTLfetch{ls6}{prop}{per_max}{value}}
+%         & \shortstack{$\DTLfetch{ab6}{prop}{per}{value} \pm \DTLfetch{ab6}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ab6}{prop}{per_max}{value}}
+        \\\midrule
+        
+	 CH Index ($\uparrow$)\footnotemark                                                                                                                                                                                                                                                                       
+        & \shortstack{$\DTLfetch{ls1}{prop}{CH}{value} \pm \DTLfetch{ls1}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{CH_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{CH}{value} \pm \DTLfetch{ab1}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{CH_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls2}{prop}{CH}{value} \pm \DTLfetch{ls2}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ls2}{prop}{CH_max}{value}}
+        & \shortstack{$\DTLfetch{ab2}{prop}{CH}{value} \pm \DTLfetch{ab2}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ab2}{prop}{CH_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls3}{prop}{CH}{value} \pm \DTLfetch{ls3}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ls3}{prop}{CH_max}{value}}
+        & \shortstack{$\DTLfetch{ab3}{prop}{CH}{value} \pm \DTLfetch{ab3}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ab3}{prop}{CH_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls4}{prop}{CH}{value} \pm \DTLfetch{ls4}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ls4}{prop}{CH_max}{value}}
+        & \shortstack{$\DTLfetch{ab4}{prop}{CH}{value} \pm \DTLfetch{ab4}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ab4}{prop}{CH_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls5}{prop}{CH}{value} \pm \DTLfetch{ls5}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ls5}{prop}{CH_max}{value}}
+        & \shortstack{$\DTLfetch{ab5}{prop}{CH}{value} \pm \DTLfetch{ab5}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ab5}{prop}{CH_max}{value}}
+
+%         & \shortstack{$\DTLfetch{ls6}{prop}{CH}{value} \pm \DTLfetch{ls6}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ls6}{prop}{CH_max}{value}}
+%         & \shortstack{$\DTLfetch{ab6}{prop}{CH}{value} \pm \DTLfetch{ab6}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ab6}{prop}{CH_max}{value}}
+        \\\midrule
+        
+	 SI Index ($\uparrow$)                                                                                                                                                                                                                                                                          
+        & \shortstack{$\DTLfetch{ls1}{prop}{SI}{value} \pm \DTLfetch{ls1}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{SI_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{SI}{value} \pm \DTLfetch{ab1}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{SI_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls2}{prop}{SI}{value} \pm \DTLfetch{ls2}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ls2}{prop}{SI_max}{value}}
+        & \shortstack{$\DTLfetch{ab2}{prop}{SI}{value} \pm \DTLfetch{ab2}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ab2}{prop}{SI_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls3}{prop}{SI}{value} \pm \DTLfetch{ls3}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ls3}{prop}{SI_max}{value}}
+        & \shortstack{$\DTLfetch{ab3}{prop}{SI}{value} \pm \DTLfetch{ab3}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ab3}{prop}{SI_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls4}{prop}{SI}{value} \pm \DTLfetch{ls4}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ls4}{prop}{SI_max}{value}}
+        & \shortstack{$\DTLfetch{ab4}{prop}{SI}{value} \pm \DTLfetch{ab4}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ab4}{prop}{SI_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls5}{prop}{SI}{value} \pm \DTLfetch{ls5}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ls5}{prop}{SI_max}{value}}
+        & \shortstack{$\DTLfetch{ab5}{prop}{SI}{value} \pm \DTLfetch{ab5}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ab5}{prop}{SI_max}{value}}
+
+%         & \shortstack{$\DTLfetch{ls6}{prop}{SI}{value} \pm \DTLfetch{ls6}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ls6}{prop}{SI_max}{value}}
+%         & \shortstack{$\DTLfetch{ab6}{prop}{SI}{value} \pm \DTLfetch{ab6}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ab6}{prop}{SI_max}{value}}
+        \\\midrule
+        
+	 DB Index ($\downarrow$)                                                                                                                                                                                                                                                                          
+        & \shortstack{$\DTLfetch{ls1}{prop}{DB}{value} \pm \DTLfetch{ls1}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ls1}{prop}{DB_min}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{DB}{value} \pm \DTLfetch{ab1}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ab1}{prop}{DB_min}{value}}
+
+        & \shortstack{$\DTLfetch{ls2}{prop}{DB}{value} \pm \DTLfetch{ls2}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ls2}{prop}{DB_min}{value}}
+        & \shortstack{$\DTLfetch{ab2}{prop}{DB}{value} \pm \DTLfetch{ab2}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ab2}{prop}{DB_min}{value}}
+
+        & \shortstack{$\DTLfetch{ls3}{prop}{DB}{value} \pm \DTLfetch{ls3}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ls3}{prop}{DB_min}{value}}
+        & \shortstack{$\DTLfetch{ab3}{prop}{DB}{value} \pm \DTLfetch{ab3}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ab3}{prop}{DB_min}{value}}
+
+        & \shortstack{$\DTLfetch{ls4}{prop}{DB}{value} \pm \DTLfetch{ls4}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ls4}{prop}{DB_min}{value}}
+        & \shortstack{$\DTLfetch{ab4}{prop}{DB}{value} \pm \DTLfetch{ab4}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ab4}{prop}{DB_min}{value}}
+
+        & \shortstack{$\DTLfetch{ls5}{prop}{DB}{value} \pm \DTLfetch{ls5}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ls5}{prop}{DB_min}{value}}
+        & \shortstack{$\DTLfetch{ab5}{prop}{DB}{value} \pm \DTLfetch{ab5}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ab5}{prop}{DB_min}{value}}
+
+%         & \shortstack{$\DTLfetch{ls6}{prop}{DB}{value} \pm \DTLfetch{ls6}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ls6}{prop}{DB_min}{value}}
+%         & \shortstack{$\DTLfetch{ab6}{prop}{DB}{value} \pm \DTLfetch{ab6}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ab6}{prop}{DB_min}{value}}
+        \\\midrule
+        
+	 DU Index ($\uparrow$)                                                                                                                                                                                                                                                                           
+        & \shortstack{$\DTLfetch{ls1}{prop}{DU}{value} \pm \DTLfetch{ls1}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{DU_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{DU}{value} \pm \DTLfetch{ab1}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{DU_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls2}{prop}{DU}{value} \pm \DTLfetch{ls2}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ls2}{prop}{DU_max}{value}}
+        & \shortstack{$\DTLfetch{ab2}{prop}{DU}{value} \pm \DTLfetch{ab2}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ab2}{prop}{DU_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls3}{prop}{DU}{value} \pm \DTLfetch{ls3}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ls3}{prop}{DU_max}{value}}
+        & \shortstack{$\DTLfetch{ab3}{prop}{DU}{value} \pm \DTLfetch{ab3}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ab3}{prop}{DU_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls4}{prop}{DU}{value} \pm \DTLfetch{ls4}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ls4}{prop}{DU_max}{value}}
+        & \shortstack{$\DTLfetch{ab4}{prop}{DU}{value} \pm \DTLfetch{ab4}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ab4}{prop}{DU_max}{value}}
+
+        & \shortstack{$\DTLfetch{ls5}{prop}{DU}{value} \pm \DTLfetch{ls5}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ls5}{prop}{DU_max}{value}}
+        & \shortstack{$\DTLfetch{ab5}{prop}{DU}{value} \pm \DTLfetch{ab5}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ab5}{prop}{DU_max}{value}}
+
+%         & \shortstack{$\DTLfetch{ls6}{prop}{DU}{value} \pm \DTLfetch{ls6}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ls6}{prop}{DU_max}{value}}
+%         & \shortstack{$\DTLfetch{ab6}{prop}{DU}{value} \pm \DTLfetch{ab6}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ab6}{prop}{DU_max}{value}}
+        \\\midrule
+        
+	 Time (s)		                                                                                                                                                                                                                                                                           
+        & $\DTLfetch{ls1}{prop}{tim}{value} \pm \DTLfetch{ls1}{prop}{tim_std}{value}$    
+        & $\DTLfetch{ab1}{prop}{tim}{value} \pm \DTLfetch{ab1}{prop}{tim_std}{value}$    
+                                                                                         
+        & $\DTLfetch{ls2}{prop}{tim}{value} \pm \DTLfetch{ls2}{prop}{tim_std}{value}$    
+        & $\DTLfetch{ab2}{prop}{tim}{value} \pm \DTLfetch{ab2}{prop}{tim_std}{value}$    
+                                                                                         
+        & $\DTLfetch{ls3}{prop}{tim}{value} \pm \DTLfetch{ls3}{prop}{tim_std}{value}$    
+        & $\DTLfetch{ab3}{prop}{tim}{value} \pm \DTLfetch{ab3}{prop}{tim_std}{value}$    
+        
+        & $\DTLfetch{ls4}{prop}{tim}{value} \pm \DTLfetch{ls4}{prop}{tim_std}{value}$    
+        & $\DTLfetch{ab4}{prop}{tim}{value} \pm \DTLfetch{ab4}{prop}{tim_std}{value}$    
+        
+        & $\DTLfetch{ls5}{prop}{tim}{value} \pm \DTLfetch{ls5}{prop}{tim_std}{value}$    
+        & $\DTLfetch{ab5}{prop}{tim}{value} \pm \DTLfetch{ab5}{prop}{tim_std}{value}$    
+        
+%         & $\DTLfetch{ls6}{prop}{tim}{value} \pm \DTLfetch{ls6}{prop}{tim_std}{value}$ 	 
+%         & $\DTLfetch{ab6}{prop}{tim}{value} \pm \DTLfetch{ab6}{prop}{tim_std}{value}$ 
+        \\\midrule
+        \multicolumn{5}{c}{$^1$ The symbol $\uparrow$ stands for "the greater the measure, the better the result". Similarly, the symbol $\downarrow$ represents the opposite}
+        \\
+\end{tabular}
+
+\end{table}
+
+
+
+\end{document}
+
+
+ 

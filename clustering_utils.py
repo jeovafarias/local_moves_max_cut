@@ -4,7 +4,7 @@ import sdp_solvers
 
 
 # CLUSTERING ASSESSMENT TOOLS ==========================================================================================
-def stats_clustering(C, lb, gt):
+def stats_clustering(P, C, lb, gt):
     """
     Compute the purity, the min purity, the clustering energy and the energy percentage of a partition (clustering)
 
@@ -13,10 +13,13 @@ def stats_clustering(C, lb, gt):
     :param gt: (1d array[integer]) - Ground Truth labeling
     :return: (float) - purity,
              (float) - clustering energy,
-             (float) - energy percentage
+             (float) - CH index,
+             (float) - Silhouette,
+             (float) - DB index,
+             (float) - DU index
     """
     return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
-           energy_clustering(C, lb), percentage_energy_clustering(C, lb)
+           energy_clustering(C, lb), percentage_energy_clustering(C, lb), CH(P, lb), SI(C, lb), DB(P, lb), DU(P, lb)
 
 
 def energy_clustering(C, lb):
@@ -284,7 +287,7 @@ def nearest_neighbours(V, K, post_processing=True, max_tol=100):
     P = np.random.randn(N, K)
     P /= np.linalg.norm(P, axis=0)
 
-    lb = np.argmin(skl_pairwise.pairwise_distances(P.T, V), axis=0)
+    lb = np.argmin(skl.pairwise.pairwise_distances(P.T, V), axis=0)
     if post_processing:
         num_attempts = 0
         prev_len_ind = 0
@@ -293,7 +296,7 @@ def nearest_neighbours(V, K, post_processing=True, max_tol=100):
             new_P = np.random.randn(N, len(ind_non_used))
             new_P /= np.linalg.norm(new_P, axis=0)
             P[:, ind_non_used] = new_P
-            lb = np.argmin(skl_pairwise.pairwise_distances(P.T, V), axis=0)
+            lb = np.argmin(skl.pairwise.pairwise_distances(P.T, V), axis=0)
             if prev_len_ind <= len(ind_non_used):
                 num_attempts += 1
                 prev_len_ind = len(ind_non_used)

@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.preprocessing import normalize
 import sklearn.metrics.pairwise as skl
-
+import clustering_utils as cu
 
 def generate_data_random(params):
     """
@@ -21,11 +21,16 @@ def generate_data_random(params):
     else:
         if params['l'] == 2:
             if params['min_dist'] > 0:
-                P, ground_truth = generate_gaussian_mindist(params['K'], params['n'], params['min_dist'],
-                                                            params['sigma_2'], params['dim_space'])
+                # P, ground_truth = generate_gaussian_mindist(params['K'], params['n'], params['min_dist'],
+                #                                             params['sigma_2'], params['dim_space'])
+                P, ground_truth = generate_grid_points(params['K'], params['n'],
+                                                       params['sigma_2'], params['dim_space'])
+                # P, ground_truth = generate_points_on_simplex(params['K'], params['n'], params['sigma_2'])
             else:
-                P, ground_truth = bump_generator(params['K'], params['n'], params['sigma_1'],
-                                                 params['sigma_2'], params['dim_space'])
+                # P, ground_truth = bump_generator(params['K'], params['n'], params['sigma_1'],
+                #                                  params['sigma_2'], params['dim_space'])
+                P, ground_truth = generate_grid_points(params['K'], params['n'],
+                                                       params['sigma_2'], params['dim_space'])
         else:
             P, ground_truth = subspace_generator(params['K'], params['n'], params['sigma_1'], params['sigma_2'],
                                                  params['dim_space'], params['l'])
@@ -48,7 +53,7 @@ def bump_generator(K, n, sigma_1, sigma_2, dim_space):
 
     :param K: (integer) - Number of clusters (bumps)
     :param n: number of points per cluster
-    :param sigma_1: (float) - Dispersion within the clusters (bumps) centers
+    :param sigma_1: (float) - Dispersion within the clusters (bumps)
     :param sigma_2: (float) - Dispersion within the points in each cluster
     :param dim_space: (integer) - points dimensionality
     :return: (2d array[float], Nxd) - Points in R^d
@@ -186,7 +191,85 @@ def generate_gaussian_mindist(K, n, min_dist, sigma, dim_ambient_space):
     ground_truth = np.array(gt)
     
     return P, ground_truth
-    
+
+
+def generate_grid_points(K, n, sigma, dim_ambient_space):
+    """
+    Generate points in a grid
+
+    :param K: (integer) - Number of clusters (bumps)
+    :param n: number of points per cluster
+    :param sigma: (float) - Dispersion within the clusters
+    :param dim_ambient_space: (integer) - points dimensionality
+    :return: (2d array[float], Nxd) - Points in R^d
+    """
+
+    assert (dim_ambient_space >= 2), "Wrong dimension!"
+    assert (sigma < 1), "Wrong sigma!"
+
+    max_length = int(np.ceil(np.sqrt(float(K))))
+    centers = np.zeros((K, 2))
+    idx = 0
+    for i in range(max_length):
+        for j in range(max_length):
+            if idx == K:
+                break
+            else:
+                centers[idx, :] = np.array([i, j])
+                idx += 1
+
+    # generate points for each cluster around center
+    for i in range(K):
+        new_points = np.zeros((n, dim_ambient_space))
+        for j in range(n):
+            new_points[j, :] = np.random.uniform(-sigma, sigma, 2) + centers[i, :]
+            while np.linalg.norm(new_points[j, :] - centers[i, :]) > sigma:
+                new_points[j, :] = np.random.uniform(-sigma, sigma, 2) + centers[i, :]
+
+        if 'P' not in locals():
+            P = new_points
+        else:
+            P = np.concatenate((P, new_points))
+
+    # Normalize centers
+    P /= np.max(centers)
+
+    # generate ground truth array
+    gt = []
+    for i in range(K):
+        gt.extend([i for _ in range(n)])
+    ground_truth = np.array(gt)
+
+    return P, ground_truth
+
+
+def generate_points_on_simplex(K, n, sigma):
+    """
+    Generate points around the corners of a simplex in R^{K}
+
+    :param K: (integer) - Number of clusters (bumps)
+    :param n: number of points per cluster
+    :param sigma: (float) - Dispersion within the clusters
+    :return: (2d array[float], Nxd) - Points in R^d
+    """
+
+    centers = cu.k_simplex(K)
+
+    # generate points for each cluster around center
+    for i in range(K):
+        new_points = sigma * np.random.randn(n, K) + centers[i, :]
+        if 'P' not in locals():
+            P = new_points
+        else:
+            P = np.concatenate((P, new_points))
+
+    # generate ground truth array
+    gt = []
+    for i in range(K):
+        gt.extend([i for _ in range(n)])
+    ground_truth = np.array(gt)
+
+    return P, ground_truth
 
 
 def get_D31_data():

@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage[showframe]{geometry}
+
+\geometry{
+paperwidth=12.2cm,
+paperheight=16cm,
+margin=0.5cm
+}
+
+\usepackage{multirow}
+\usepackage{booktabs,dcolumn,array}                 
+\usepackage{graphicx}
+\usepackage{datatool}
+\usepackage{bashful}
+
+\newcommand{\widthup}{5cm}
+\newcommand{\widthbot}{2cm}
+
+\newcommand{\ida}{3}
+
+\DTLsetseparator{|}%
+\DTLloaddb{ls1}{\ida/ls_results.dat}
+\DTLloaddb{ab1}{\ida/ab_results.dat}
+
+\begin{document}
+
+\begin{table}
+
+\begin{tabular}{ccc}
+ 	 & \multicolumn{2}{c}{\includegraphics[width = \widthup]{\ida/GT.png}}\\
+	 % \cmidrule[1pt](rl){2-5}\cmidrule[1pt](rl){6-9}\cmidrule[1pt](rl){10-13}\cmidrule[1pt](rl){14-17}\cmidrule[1pt](rl){18-21}\cmidrule[1pt](rl){22-25}
+	 \textbf{Mean (\DTLfetch{ls1}{prop}{exp}{value} trials)}
+	 & LS & AB\\\midrule
+	 Purity 		
+        & \shortstack{$\DTLfetch{ls1}{prop}{pur}{value} \pm \DTLfetch{ls1}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{pur_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{pur}{value} \pm \DTLfetch{ab1}{prop}{pur_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{pur_max}{value}}\\\midrule
+        
+     Min-Purity 		
+        & \shortstack{$\DTLfetch{ls1}{prop}{pur_min}{value} \pm \DTLfetch{ls1}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{pur_min_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{pur_min}{value} \pm \DTLfetch{ab1}{prop}{pur_min_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{pur_min_max}{value}}\\\midrule
+        
+	 Energy		                                                                                                                                                                                                                                                                           
+        & \shortstack{$\DTLfetch{ls1}{prop}{ene}{value} \pm \DTLfetch{ls1}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{ene_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{ene}{value} \pm \DTLfetch{ab1}{prop}{ene_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{ene_max}{value}}\\\midrule
+    
+	 Energy Percentage (\%)                                                                                                                                                                                                                                                                           
+        & \shortstack{$\DTLfetch{ls1}{prop}{per}{value} \pm \DTLfetch{ls1}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{per_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{per}{value} \pm \DTLfetch{ab1}{prop}{per_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{per_max}{value}}\\\midrule
+    
+	 CH Index ($\uparrow$)                                                                                                                                                                                                                                                                       
+        & \shortstack{$\DTLfetch{ls1}{prop}{CH}{value} \pm \DTLfetch{ls1}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{CH_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{CH}{value} \pm \DTLfetch{ab1}{prop}{CH_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{CH_max}{value}}\\\midrule
+    
+	 SI Index ($\uparrow$)                                                                                                                                                                                                                                                                          
+        & \shortstack{$\DTLfetch{ls1}{prop}{SI}{value} \pm \DTLfetch{ls1}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{SI_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{SI}{value} \pm \DTLfetch{ab1}{prop}{SI_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{SI_max}{value}}\\\midrule
+    
+	 DB Index ($\downarrow$)                                                                                                                                                                                                                                                                          
+        & \shortstack{$\DTLfetch{ls1}{prop}{DB}{value} \pm \DTLfetch{ls1}{prop}{DB_std}{value}$    \\ Min: \DTLfetch{ls1}{prop}{DB_min}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{DB}{value} \pm \DTLfetch{ab1}{prop}{DB_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{DB_min}{value}}\\\midrule
+        
+	 DU Index ($\uparrow$)                                                                                                                                                                                                                                                                           
+        & \shortstack{$\DTLfetch{ls1}{prop}{DU}{value} \pm \DTLfetch{ls1}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ls1}{prop}{DU_max}{value}}
+        & \shortstack{$\DTLfetch{ab1}{prop}{DU}{value} \pm \DTLfetch{ab1}{prop}{DU_std}{value}$    \\ Max: \DTLfetch{ab1}{prop}{DU_max}{value}}\\\midrule
+        
+	 Time (s)		                                                                                                                                                                                                                                                                           
+        & $\DTLfetch{ls1}{prop}{tim}{value} \pm \DTLfetch{ls1}{prop}{tim_std}{value}$    
+        & $\DTLfetch{ab1}{prop}{tim}{value} \pm \DTLfetch{ab1}{prop}{tim_std}{value}$\\\midrule
+\end{tabular}
+\end{table}
+
+
+
+\end{document}
+
+
