@@ -10,7 +10,7 @@ def generate_data_random(params):
     :param params: (Dictionary) - {'sigma_1' (float): First noise parameter, 'sigma_2' (float): Second noise parameter,
                                    'K' (integer): number rof clusters, 'dim_space' (integer): points dimensionality,
                                    'n' (integer): num. of points per cluster, 'l' (integer): subspace
-                                   dimensionality, 'use_prev_p' (boolean): use previous, 'shuffle' (boolean): shuffle data}
+                                   dimensionality + 2, 'use_prev_p' (boolean): use previous, 'shuffle' (boolean): shuffle data}
     :return: (2d array[float], Nxd) - Points in R^d
              (1d array[float]) - Ground Truth labelling
     """
