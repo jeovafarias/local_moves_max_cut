@@ -15,7 +15,7 @@ def maxcut_brute_force_solver(C):
     max_ene = 0
     best = all_partitions[0]
     for lb in all_partitions:
-        ene = cu.energy_clustering(C, lb)
+        ene = cu.energy_clustering_pairwise(C, lb)
         if ene > max_ene:
             best = lb
             max_ene = ene
@@ -301,7 +301,7 @@ def solve_round_sdp(C, use_IPM=False):
 
         v = hyper_plane_rounding(V)
 
-        ene = cu.energy_clustering(C, v)
+        ene = cu.energy_clustering_pairwise(C, v)
         if ene > max_ene:
             best = v
             max_ene = ene

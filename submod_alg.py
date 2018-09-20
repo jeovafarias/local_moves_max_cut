@@ -337,7 +337,7 @@ def localSearchSubmod(V,E,w,k,origLabels,moveType = 'ab',moveSequence=None,maxIt
                 updated = True
         it += 1
 
-    return labels
+    return labels, it
 
 
 # Vanilla local search for clustering
@@ -377,4 +377,4 @@ def localSearch(V,E,w,k,origLabels,maxIt=1000):
         it += 1
 
 
-    return labels
+    return labels, it
