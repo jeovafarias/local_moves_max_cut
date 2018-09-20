@@ -364,7 +364,7 @@ def max_k_cut_rounding(V, params):
         if ene > max_ene:
             lb = new_lb
             max_ene = ene
-
+            
     return lb
 
 
@@ -426,6 +426,7 @@ def nearest_neighbours(V, K, post_processing=False, max_tol=100):
     :return: (1d array[integer]) -  Final partitioning
     """
     N = V.shape[0]
+
     P = np.random.randn(N, K)
     P /= np.linalg.norm(P, axis=0)
 
