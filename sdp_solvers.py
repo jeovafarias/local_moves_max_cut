@@ -5,6 +5,7 @@ import itertools
 import time
 import clustering_utils as cu
 import itertools
+import sklearn.metrics as skl
 
 
 # BRUTE FORCE METHODS (TODO) ===========================================================================================
@@ -15,7 +16,7 @@ def maxcut_brute_force_solver(C):
     max_ene = 0
     best = all_partitions[0]
     for lb in all_partitions:
-        ene = cu.energy_clustering(C, lb)
+        ene = cu.energy_clustering_pairwise(C, lb)
         if ene > max_ene:
             best = lb
             max_ene = ene
@@ -294,29 +295,156 @@ def solve_round_sdp(C, use_IPM=False):
     V = np.linalg.cholesky(X + 1e-5 * np.trace(X) * np.eye(X.shape[0]))
 
     # Select the best cutting plane (the one that maximizes the objective) ---------------------------------------------
-    max_ene = 0
-    num_rounding_trials = max(100, np.floor_divide(C.shape[0], 2))
-    best = hyper_plane_rounding(V)
-    for i in range(num_rounding_trials):
+    params = {"is_a_hypergraph_problem": False, "C": C}
+    lb = max_cut_rounding(V, params)
 
-        v = hyper_plane_rounding(V)
-
-        ene = cu.energy_clustering(C, v)
-        if ene > max_ene:
-            best = v
-            max_ene = ene
-
-    return best
+    return lb
 
 
-def hyper_plane_rounding(V):
+def solve_round_hypergraph_sdp(E, w, K, N, l):
     """
-    Hyper plane rounding algorithm used in Max-Cut SDP problems
+    Solve the Max-Hypergraph Cut SDP problem represented by C
 
-    :param V: (2d array[float], NxN) - Embedded vectors (rows) in a R^{N-1} unit sphere
+    :param E: (List of list of Integers) - Hypergraph vertices
+    :param w: (1d array[float], |E|) - Hypergraph weights
+    :param K: (integer) - Number of clusters
+    :param N: (integer) - Number of data points represented by the hypergraph in E
+    :param l: (integer) - Subspace dimension
+    :return: (1d array[integer]) - Approximate optimal partition of the graph represented by C
+    """
+    # Solve SDP using the Interior Point Method (Picos) or ADMM --------------------------------------------------------
+    X, _, _ = maxkhypercut_ipm_solver(E, w, K, N, l)
+
+    # Embedding --------------------------------------------------------------------------------------------------------
+    V = np.linalg.cholesky(X + 1e-5 * np.trace(X) * np.eye(X.shape[0]))
+
+    # Select the best cutting plane (the one that maximizes the objective) ---------------------------------------------
+    params = {"is_a_hypergraph_problem": True, "E": E, "w": w, "K": K}
+    lb = max_k_cut_rounding(V, params)
+
+    return lb
+
+
+def max_k_cut_rounding(V, params):
+    """
+    Hyper plane rounding algorithm used in Max-Cut SDP problems (choosing the best out of some trials)
+
+    :param V: (2d array[float], NxN) - Embedded vectors (rows) in a R^{N-1} unit sphere'
+    :param params: (Dictionary) - {'is_a_hypergraph_problem' (boolean): check if the problem that originated V is
+                                    a hypergraph problem,
+                                   'E' (List of list of Integers): Hypergraph vertices,
+                                   'w' (1d array[float], |E|):  Hypergraph weights,
+                                   'K' (integer): Number of clusters,
+                                   'C' (2d array[float], NxN): Weight Matrix represents the graph to be partitioned}
     :return: (1d array[integer]) - Rounded partition
     """
+
+    assert 'is_a_hypergraph_problem' in params, "Missing the variable 'is_a_hypergraph_problem'!"
+    if params["is_a_hypergraph_problem"]:
+        assert 'E' in params, "Missing the variable 'E'!"
+        assert 'w' in params, "Missing the variable 'w'!"
+        assert 'K' in params, "Missing the variable 'K'!"
+    else:
+        assert 'C' in params, "Missing the variable 'C'!"
+
     N = V.shape[0]
-    w = np.random.randn(N)
-    v = V.dot(w)
-    return (v > 0).astype(int) - (v < 0).astype(int)
+    max_ene = 0
+    num_rounding_trials = max(100, np.floor_divide(V.shape[0], 2))
+
+    lb = np.zeros(N, dtype=int)
+    for i in range(num_rounding_trials):
+
+        new_lb = nearest_neighbours(V, params["K"])
+
+        if params["is_a_hypergraph_problem"]:
+            ene = cu.energy_clustering_high_order(params["E"], params["w"], new_lb)
+        else:
+            ene = cu.energy_clustering_pairwise(params["C"], new_lb)
+
+        if ene > max_ene:
+            lb = new_lb
+            max_ene = ene
+
+    return lb
+
+
+def max_cut_rounding(V, params):
+    """
+    Hyper plane rounding algorithm used in Max-Cut SDP problems (choosing the best out of some trials)
+
+    :param V: (2d array[float], NxN) - Embedded vectors (rows) in a R^{N-1} unit sphere
+    :param params: (Dictionary) - {'is_a_hypergraph_problem' (boolean): check if the problem that originated V is
+                                    a hypergraph problem,
+                                   'E' (List of list of Integers): Hypergraph vertices,
+                                   'w' (1d array[float], |E|):  Hypergraph weights,
+                                   'K' (integer): Number of clusters,
+                                   'C' (2d array[float], NxN): Weight Matrix represents the graph to be partitioned}
+    :return: (1d array[integer]) - Rounded partition
+    """
+    assert 'is_a_hypergraph_problem' in params, "Missing the variable 'is_a_hypergraph_problem'!"
+    if params["is_a_hypergraph_problem"]:
+        assert 'E' in params, "Missing the variable 'E'!"
+        assert 'w' in params, "Missing the variable 'w'!"
+        assert 'K' in params, "Missing the variable 'K'!"
+    else:
+        assert 'C' in params, "Missing the variable 'C'!"
+
+    N = V.shape[0]
+    max_ene = 0
+    num_rounding_trials = max(100, np.floor_divide(V.shape[0], 2))
+
+    lb = np.zeros(N, dtype=int)
+    for i in range(num_rounding_trials):
+
+        # Selects a hyperplane that cuts the unit ball
+        w = np.random.randn(N)
+        v = V.dot(w)
+        new_lb = (v > 0).astype(int) - (v < 0).astype(int)
+
+        if params["is_a_hypergraph_problem"]:
+            ene = cu.energy_clustering_high_order(params["E"], params["w"], new_lb)
+        else:
+            ene = cu.energy_clustering_pairwise(params["C"], new_lb)
+
+        if ene > max_ene:
+            lb = new_lb
+            max_ene = ene
+
+    return lb
+
+
+# OTHER METHODS ========================================================================================================
+def nearest_neighbours(V, K, post_processing=False, max_tol=100):
+    """
+    Compute the K nearest neighbours rounding procedure to Max-K-Cut SDP problem
+
+    :param V: (2d array[float], NxN) - Embedding created by the SDP solver
+    :param K: (integer) - Number of partitions to be found
+    :param post_processing: (boolean) - Do post processing in order to find neigbours to all K vectors
+                            representing the partitions
+    :param max_tol: (integer) - Maximum number of nearest neighbours retrials in the post-processing step
+    :return: (1d array[integer]) -  Final partitioning
+    """
+    N = V.shape[0]
+    P = np.random.randn(N, K)
+    P /= np.linalg.norm(P, axis=0)
+
+    lb = np.argmin(skl.pairwise.pairwise_distances(P.T, V), axis=0)
+
+    if post_processing:
+        num_attempts = 0
+        prev_len_ind = 0
+        while len(np.unique(lb)) != K and num_attempts < max_tol:
+            ind_non_used = list(set(range(K)) - set(lb))
+            new_P = np.random.randn(N, len(ind_non_used))
+            new_P /= np.linalg.norm(new_P, axis=0)
+            P[:, ind_non_used] = new_P
+            lb = np.argmin(skl.pairwise.pairwise_distances(P.T, V), axis=0)
+            if prev_len_ind <= len(ind_non_used):
+                num_attempts += 1
+                prev_len_ind = len(ind_non_used)
+            else:
+                num_attempts = 0
+                prev_len_ind = 0
+
+    return lb

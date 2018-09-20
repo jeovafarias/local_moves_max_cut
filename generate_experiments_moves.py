@@ -134,42 +134,44 @@ def run_test(n, k, sigma, min_dist, num_trials, random_init, use_previous_datase
         print ("Running experiment %d of %d" % (t + 1, num_trials))
         if random_init:
             lb_init = np.random.randint(0, k, N)
+            while len(np.unique(lb_init)) < k:
+                lb_init = np.random.randint(0, k, N)
             ab_sequence = None
         else:
             lb_init = np.zeros(N, dtype=int)
             ab_sequence = np.array([np.random.choice(k, k, replace=False), np.random.choice(k, k, replace=False)])
 
         start_t = time.time()
-        lb_ab, ab_it[t] = moves.large_move_maxcut(C, k, lb_init,
+        ab_labeling, ab_it[t] = moves.large_move_maxcut(C, k, lb_init,
                                         move_type="ab", ab_sequence=ab_sequence,
                                         num_max_it=num_max_it, use_IPM=use_IPM)
         ab_pur[t], ab_min_pur[t], ab_ene[t], ab_per[t], ab_ch[t], ab_si[t], ab_db[t], ab_du[t] \
-            = cu.stats_clustering_pairwise(C, lb_ab, ground_truth, P)
+            = cu.stats_clustering_pairwise(C, ab_labeling, ground_truth, P, use_other_measures=True)
         ab_tim[t] = time.time() - start_t
         print time.time() - start_t
 
         # start_t = time.time()
-        # lb_ae, ae_it[t] = moves.large_move_maxcut(C, k, lb_init,
+        # ae_labeling, ae_it[t] = moves.large_move_maxcut(C, k, lb_init,
         #                                 move_type="ae", ab_sequence=ab_sequence,
         #                                 num_max_it=num_max_it, use_IPM=use_IPM)
         # ae_pur[t], ae_min_pur[t], ae_ene[t], ae_per[t], ae_ch[t], ae_si[t], ae_db[t], ae_du[t]\
-        #     = cu.stats_clustering(P, C, lb_ae, ground_truth)
+        #     = cu.stats_clustering(P, C, ae_labeling, ground_truth)
         # ae_tim[t] = time.time() - start_t
         # print time.time() - start_t
         #
         # start_t = time.time()
-        # lb_aebs, aebs_it[t] = moves.large_move_maxcut(C, k, lb_init,
+        # aebs_labeling, aebs_it[t] = moves.large_move_maxcut(C, k, lb_init,
         #                                   move_type="ae_bs", ab_sequence=ab_sequence,
         #                                   num_max_it=num_max_it, use_IPM=use_IPM)
         # aebs_pur[t], aebs_min_pur[t], aebs_ene[t], aebs_per[t], aebs_ch[t], aebs_si[t], aebs_db[t], aebs_du[t] \
-        #     = cu.stats_clustering(P, C, lb_aebs, ground_truth)
+        #     = cu.stats_clustering(P, C, aebs_labeling, ground_truth)
         # aebs_tim[t] = time.time() - start_t
         # print time.time() - start_t
 
         start_t = time.time()
-        lb_ls, ls_it[t] = cu.local_search(C, k, lb_init, num_max_it=num_max_it)
-        ls_pur[t], ls_min_pur[t], ls_ene[t], ls_per[t], ls_ch[t], ls_si[t], ls_db[t], ls_du[t]\
-            = cu.stats_clustering_pairwise(C, lb_ls, ground_truth, P)
+        ls_labeling, ls_it[t] = cu.local_search(C, k, lb_init, num_max_it=num_max_it)
+        ls_pur[t], ls_min_pur[t], ls_ene[t], ls_per[t], ls_ch[t], ls_si[t], ls_db[t], ls_du[t] \
+            = cu.stats_clustering_pairwise(C, ls_labeling, ground_truth, P, use_other_measures=True)
         ls_tim[t] = time.time() - start_t
         # print time.time() - start_t
 
@@ -225,30 +227,25 @@ def run_test(n, k, sigma, min_dist, num_trials, random_init, use_previous_datase
               "CH": ls_ch, "SI": ls_si,  "DB": ls_db, "DU": ls_du, "times": ls_tim, "iterations": ls_it}
     save_data(props, dirpath, filename="ls_results")
 
-    gt_pur, gt_min_pur, gt_ene, gt_per, gt_ch, gt_si, gt_db, gt_du \
-        = cu.stats_clustering_pairwise(C, ground_truth, ground_truth, P)
-    props = {"purities": gt_pur, "min_purities": gt_min_pur, "energies": gt_ene, "percentages_energy": gt_per,
-              "CH": gt_ch, "SI": gt_si,  "DB": gt_db, "DU": gt_du, "times": 0, "iterations": 0}
-    save_data(props, dirpath, filename="gt_results")
+    # gt_pur, gt_min_pur, gt_ene, gt_per, gt_ch, gt_si, gt_db, gt_du \
+    #     = cu.stats_clustering_pairwise(C, ground_truth, ground_truth, P)
+    # props = {"purities": gt_pur, "min_purities": gt_min_pur, "energies": gt_ene, "percentages_energy": gt_per,
+    #           "CH": gt_ch, "SI": gt_si,  "DB": gt_db, "DU": gt_du, "times": 0, "iterations": 0}
+    # save_data(props, dirpath, filename="gt_results")
 
     print("Total time (id %d): %.4f s\n" % (experiment_id, time.time() - time_start))
 
 
 if __name__ == "__main__":
     random_init = True
-    # if random_init:
-    #     dir_name = 'experiments_rand_int'
-    # else:
-    #     dir_name = 'experiments_non_rand_int'
 
-    dir_name = 'test_ls_ab'
-    use_previous_dataset = -1
+    dir_name = 'test_ls_ab2'
     num_trials = 30
 
-    K = [25, 25, 36, 64, 100]
+    K = [9, 25, 36]
 
-    points_per_cluster = [200]
-    sigmas = [0.2, 0.05, 0.1]
+    points_per_cluster = [5]
+    sigmas = [0.3, 0.5, 0.6]
     min_dists = [0.01]
 
     exp_number = 1
@@ -259,10 +256,10 @@ if __name__ == "__main__":
                     print('EXP. %d - 1 ============================================================' % (exp_number + 1))
                     print('K: %d, n: %d, min_dist: %.4f, sigma %.4f' % (k, n, min_dist, sigma))
                     exp_number += 1
-                    run_test(n, k, sigma, min_dist, num_trials, random_init, use_previous_dataset, dir_name=dir_name)
+                    run_test(n, k, sigma, min_dist, num_trials, random_init, dir_name=dir_name)
     print("SET FINISHED ========================================================================== \n")
 
-    print('EXP - D31 ============================================================')
-    run_test(0, 0, 0, 0, num_trials, random_init, use_D31=True, dir_name=dir_name)
-    print("SET FINISHED ========================================================================== \n")
+    # print('EXP - D31 ============================================================')
+    # run_test(0, 0, 0, 0, num_trials, random_init, use_D31=True, dir_name=dir_name)
+    # print("SET FINISHED ========================================================================== \n")
 

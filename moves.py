@@ -38,26 +38,25 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
         lb_prev = np.copy(lb)
 
         for alpha in alpha_sequence:
-            for beta in beta_sequence:
-                if alpha != beta:
-                    if move_type == "ab":
-                        # print("Swapping (%d, %d), Current Class.: %s" % (alpha, beta, lb))
-                        new_lb = abswap_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
-                    elif move_type == "ae":
-                        # print("Expanding (%d), Current Class.: %s" % (alpha, lb))
-                        new_lb = aexp_sdp(C, np.copy(lb), alpha, use_IPM=use_IPM)
-                    elif move_type == "ae_bs":
-                        # print("Expanding/shrinking (%d, %d), Current Class.: %s" % (alpha, beta, lb))
-                        new_lb = aexp_bshrk_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
+            for beta in range(alpha + 1, K):
+                if move_type == "ab":
+                    # print("Swapping (%d, %d), Current Class.: %s" % (alpha, beta, lb))
+                    new_lb = abswap_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
+                elif move_type == "ae":
+                    # print("Expanding (%d), Current Class.: %s" % (alpha, lb))
+                    new_lb = aexp_sdp(C, np.copy(lb), alpha, use_IPM=use_IPM)
+                elif move_type == "ae_bs":
+                    # print("Expanding/shrinking (%d, %d), Current Class.: %s" % (alpha, beta, lb))
+                    new_lb = aexp_bshrk_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
 
-                    ene = cu.energy_clustering_pairwise(C, new_lb)
-                    if ene >= max_ene:
-                        max_ene = ene
-                        lb = new_lb
+                ene = cu.energy_clustering_pairwise(C, new_lb)
+                if ene >= max_ene:
+                    max_ene = ene
+                    lb = new_lb
 
-                    # If it is an alpha expansion, there is no need to iterate over beta_sequence
-                    if move_type == "ae":
-                        break
+                # If it is an alpha expansion, there is no need to iterate over beta_sequence
+                if move_type == "ae":
+                    break
         it += 1
         err = np.linalg.norm(lb - lb_prev)
 
@@ -86,6 +85,7 @@ def abswap_sdp(C_initial, lb, alpha, beta, use_IPM=False):
     try:
         int_sol = solvers.solve_round_sdp(C, use_IPM=use_IPM)
     except Exception:
+        print("Exception caught")
         return lb
     
     # Update labels ----------------------------------------------------------------------------------------------------
@@ -109,7 +109,11 @@ def aexp_sdp(C_initial, lb, alpha, use_IPM=False):
         return lb
 
     # Solve & round ----------------------------------------------------------------------------------------------------
-    int_sol = solvers.solve_round_sdp(C, use_IPM=use_IPM)
+    try:
+        int_sol = solvers.solve_round_sdp(C, use_IPM=use_IPM)
+    except Exception:
+        print("Exception caught")
+        return lb
 
     # Update labels ----------------------------------------------------------------------------------------------------
     non_alpha_indices = np.nonzero(lb != alpha)[0]
