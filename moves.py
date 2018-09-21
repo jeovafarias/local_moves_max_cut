@@ -35,8 +35,8 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
     # Iterate moves ----------------------------------------------------------------------------------------------------
     it, max_ene, err = 1, 0, np.inf
     while err > 1e-10 and it < num_max_it:
-        lb_prev = np.copy(lb)
 
+        ene_prev = cu.energy_clustering_pairwise(C, lb)
         for alpha in alpha_sequence:
             for beta in range(alpha + 1, K):
                 if move_type == "ab":
@@ -58,9 +58,10 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
                 if move_type == "ae":
                     break
         it += 1
-        err = np.linalg.norm(lb - lb_prev)
+        err = np.linalg.norm(cu.energy_clustering_pairwise(C, lb) - ene_prev)
 
     return lb, it
+
 
 def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=100, use_IPM=False):
     """
