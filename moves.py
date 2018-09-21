@@ -34,9 +34,9 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
 
     # Iterate moves ----------------------------------------------------------------------------------------------------
     it, max_ene, err = 1, 0, np.inf
-    while err > 1e-10 and it < num_max_it:
+    while err > 1e-5 and it < num_max_it:
         lb_prev = np.copy(lb)
-
+        prev_ene = max_ene
         for alpha in alpha_sequence:
             for beta in range(alpha + 1, K):
                 if move_type == "ab":
@@ -50,7 +50,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
                     new_lb = aexp_bshrk_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
 
                 ene = cu.energy_clustering_pairwise(C, new_lb)
-                if ene >= max_ene:
+                if ene > max_ene:
                     max_ene = ene
                     lb = new_lb
 
@@ -58,7 +58,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
                 if move_type == "ae":
                     break
         it += 1
-        err = np.linalg.norm(lb - lb_prev)
+        err = max_ene-past_ene  #could make percent change
 
     return lb, it
 
@@ -85,20 +85,20 @@ def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=
 
     # Iterate moves ----------------------------------------------------------------------------------------------------
     it, max_ene, err = 1, 0, np.inf
-    while err > 1e-10 and it < num_max_it:
+    while err > 1e-5 and it < num_max_it:
         lb_prev = np.copy(lb)
-
+        past_ene = max_ene
         for alpha in alpha_sequence:
-            for beta in beta_sequence:
+            for beta in range(alpha + 1, K):
                 if alpha != beta:
                     new_lb = abswap_sdp_high_order(E, w, np.copy(lb), alpha, beta, use_IPM=use_IPM)
                     ene = cu.energy_clustering_high_order(E, w, new_lb)
-                    if ene >= max_ene:
+                    if ene > max_ene:
                         max_ene = ene
                         lb = new_lb
 
         it += 1
-        err = np.linalg.norm(lb - lb_prev)
+        err = max_ene-past_ene #could make percent change
 
     return lb, it
 
@@ -161,10 +161,9 @@ def abswap_sdp_high_order(EOrig, wOrig, lb, alpha, beta, use_IPM=False):
     
     # Solve & round ----------------------------------------------------------------------------------------------------
     try:
-        int_sol = solvers.maxkhypercut_ipm_solver(E, w, 2, len(ab_indices), 3)
+        int_sol = solvers.solve_round_hypergraph_sdp(E, w, 2, n, 3)
     except Exception:
         return lb
-    print int_sol
     # Update labels ----------------------------------------------------------------------------------------------------
     lb[ab_indices] = alpha * (int_sol > 0) + beta * (int_sol == 0)
     return lb
