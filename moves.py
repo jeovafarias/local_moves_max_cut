@@ -36,9 +36,9 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
     it, max_ene, err = 1, 0, np.inf
     while err > 1e-5 and it < num_max_it:
         lb_prev = np.copy(lb)
-        prev_ene = max_ene
+        past_ene = max_ene
         for alpha in alpha_sequence:
-            for beta in range(alpha + 1, K):
+            for beta in range(alpha + 1, K):  # should update for beta sequence
                 if move_type == "ab":
                     # print("Swapping (%d, %d), Current Class.: %s" % (alpha, beta, lb))
                     new_lb = abswap_sdp(C, np.copy(lb), alpha, beta, use_IPM=use_IPM)
@@ -89,7 +89,7 @@ def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=
         lb_prev = np.copy(lb)
         past_ene = max_ene
         for alpha in alpha_sequence:
-            for beta in range(alpha + 1, K):
+            for beta in range(alpha + 1, K): # should update for beta sequence
                 if alpha != beta:
                     new_lb = abswap_sdp_high_order(E, w, np.copy(lb), alpha, beta, use_IPM=use_IPM)
                     ene = cu.energy_clustering_high_order(E, w, new_lb)
