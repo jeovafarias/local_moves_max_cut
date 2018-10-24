@@ -85,7 +85,6 @@ def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=
     # Iterate moves ----------------------------------------------------------------------------------------------------
     it, max_ene, err = 1, 0, np.inf
     while err > 1e-5 and it < num_max_it:
-        lb_prev = np.copy(lb)
         past_ene = max_ene
         for alpha in alpha_sequence:
             for beta in range(alpha + 1, K):  # should update for beta sequence
