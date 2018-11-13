@@ -368,3 +368,30 @@ def compute_volume(P, ind, squared_dist=False):
         return np.abs(np.linalg.det(np.dot(M, M.T)))
     else:
         return np.sqrt(np.abs(np.linalg.det(np.dot(M, M.T))))
+
+def sdp_reduction(n,E,w):
+    C = np.zeros(shape=(n,n))
+    for i in range(len(E)):
+        e, vol = E[i], w[i]
+        if len(e) == 3:
+            i1, i2, i3 = e[0], e[1], e[2]
+            C[i1,i2] += vol
+            C[i2,i1] += vol
+            C[i2,i3] += vol
+            C[i3,i2] += vol
+            C[i1,i3] += vol
+            C[i3,i1] += vol
+        elif len(e) == 2:
+            i1, i2 = e[0], e[1]
+            C[i1, i2] += vol
+            C[i2, i1] += vol
+    return C
+
+def index_volumes(n,E):
+    indices = [[] for _ in range(n)]
+    m = len(E)
+    for j in range(m):
+        for i in e:
+            indices[i].append(m)
+    return indices
+        
