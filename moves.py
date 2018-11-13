@@ -7,11 +7,10 @@ import data_visualization_tools as dv
 def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_it=100, use_IPM=False):
     """
     Approximately solve the Max-K-Cut problem represented by C using a large move local search
-
     :param C: (2d array[float], NxN) - Weight matrix calculated from N data-points that represents the graph to be partitioned
     :param K: (integer) - Number of desired partitions
     :param lb_init: (1d array[integer]) - Initial labeling (partition)
-    :param move_type: (string) - Which large move to be used ("ab" for alpha-beta swap, "ae" for alpha-expansion and 
+    :param move_type: (string) - Which large move to be used ("ab" for alpha-beta swap, "ae" for alpha-expansion and
            "ae_bs" for alpha-expansion beta-shrink)
     :param ab_sequence: (2d array[integer], 2xK) - Sequence of alpha labels and beta labels during the iterations
     :param num_max_it: (integer) - Maximum number of iterations
@@ -58,7 +57,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
                 if move_type == "ae":
                     break
         it += 1
-        err = max_ene-past_ene  #could make percent change
+        err = max_ene - past_ene  # could make percent change
 
     return lb, it
 
@@ -87,10 +86,9 @@ def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=
     # Iterate moves ----------------------------------------------------------------------------------------------------
     it, max_ene, err = 1, 0, np.inf
     while err > 1e-5 and it < num_max_it:
-        lb_prev = np.copy(lb)
         past_ene = max_ene
         for alpha in alpha_sequence:
-            for beta in range(alpha + 1, K): # should update for beta sequence
+            for beta in range(alpha + 1, K):  # should update for beta sequence
                 if alpha != beta:
                     new_lb = abswap_sdp_high_order(E, w, np.copy(lb), alpha, beta, use_reduction)
                     ene = cu.energy_clustering_high_order(E, w, new_lb)
@@ -99,7 +97,7 @@ def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=
                         lb = new_lb
 
         it += 1
-        err = max_ene-past_ene #could make percent change
+        err = max_ene - past_ene  # could make percent change
 
     return lb, it
 
@@ -107,7 +105,6 @@ def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=
 def abswap_sdp(C_initial, lb, alpha, beta, use_IPM=False):
     """
     Executes an alpha-beta swap step
-
     :param C_initial: (2d array[float], NxN) - initial weight matrix computed from all initial data
     :param lb: (1d array[integer]) - Current labeling
     :param alpha & beta: (integers) Labels to be swapped
@@ -121,14 +118,14 @@ def abswap_sdp(C_initial, lb, alpha, beta, use_IPM=False):
 
     # Adjacency matrix -------------------------------------------------------------------------------------------------
     C = C_initial[np.ix_(ab_indices, ab_indices)]
-    
+
     # Solve & round ----------------------------------------------------------------------------------------------------
     try:
         int_sol = solvers.solve_round_sdp(C, use_IPM=use_IPM)
     except Exception:
         print("Exception caught")
         return lb
-    
+
     # Update labels ----------------------------------------------------------------------------------------------------
     lb[ab_indices] = alpha * (int_sol > 0).astype(int) + beta * (int_sol < 0).astype(int)
     return lb
@@ -181,7 +178,6 @@ def abswap_sdp_high_order(EOrig, wOrig, lb, alpha, beta, use_reduction=False):
 def aexp_sdp(C_initial, lb, alpha, use_IPM=False):
     """
     Executes an alpha-expansion step
-
     :param C_initial: (2d array[float], NxN) - initial weight matrix computed from all initial data
     :param lb: (1d array[integer]) - Current labeling
     :param alpha: (integer) Label to be expanded
@@ -209,7 +205,6 @@ def aexp_sdp(C_initial, lb, alpha, use_IPM=False):
 def aexp_bshrk_sdp(C_initial, lb, alpha, beta, use_IPM=False):
     """
     Executes an alpha-expansion beta-shrink step
-
     :param C_initial: (2d array[float], NxN) - initial weight matrix computed from all initial data
     :param lb: (1d array[integer]) - Current labeling
     :param alpha: (integer) Label to be expanded
@@ -228,7 +223,6 @@ def aexp_bshrk_sdp(C_initial, lb, alpha, beta, use_IPM=False):
 def create_expansion_gadget(C_initial, lb, alpha):
     """
     Create gadget that will be used on the alpha expansion step
-
     :param C_initial: (2d array[float], NxN) - initial weight matrix computed from all initial data
     :param lb: (1d array[integer]) - Current labeling
     :param alpha: (integer) Label to be expanded

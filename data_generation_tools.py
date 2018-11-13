@@ -28,10 +28,13 @@ def generate_data_random(params):
                                                        params['sigma_2'], params['dim_space'])
                 # P, ground_truth = generate_points_on_simplex(params['K'], params['n'], params['sigma_2'])
             else:
-                # P, ground_truth = bump_generator(params['K'], params['n'], params['sigma_1'],
-                #                                  params['sigma_2'], params['dim_space'])
-                P, ground_truth = generate_grid_points(params['K'], params['n'],
-                                                       params['sigma_2'], params['dim_space'])
+                if params['simplex']:
+                    P, ground_truth = generate_points_on_simplex(params['K'], params['n'], params['sigma_2'])
+                else:
+                    # P, ground_truth = bump_generator(params['K'], params['n'], params['sigma_1'],
+                    #                                  params['sigma_2'], params['dim_space'])
+                    P, ground_truth = generate_grid_points(params['K'], params['n'],
+                                                           params['sigma_2'], params['dim_space'])
         else:
             P, ground_truth = subspace_generator(params['K'], params['n'], params['sigma_1'], params['sigma_2'],
                                                  params['dim_space'], params['l'])

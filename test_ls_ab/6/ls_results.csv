@@ -1,0 +1,2 @@
+property,num_exp,tim,tim_std,pur,pur_std,pur_max,pur_max_n,pur_min,pur_min_std,pur_min_max,pur_min_max_n,ene,ene_std,ene_max,ene_max_n,per,per_std,per_max,per_max_n,CH,CH_std,CH_max,SI,SI_std,SI_max,DB,DB_std,DB_min,DU,DU_std,DU_max,
+value,3,0.007,0.00,0.875,0.00,0.875,1.00,0.667,0.00,0.667,1.00,272.684,0.00,272.684,1.00,0.964,0.00,0.964,1.00,28.365,0.00,28.365,0.777,0.00,0.777,0.520,0.00,0.520,0.731,0.00,0.731,

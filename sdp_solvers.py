@@ -340,6 +340,7 @@ def max_k_cut_rounding(V, params):
     """
 
     assert 'is_a_hypergraph_problem' in params, "Missing the variable 'is_a_hypergraph_problem'!"
+    assert 'post_processing' in params, "Missing the variable 'post_processing'!"
     if params["is_a_hypergraph_problem"]:
         assert 'E' in params, "Missing the variable 'E'!"
         assert 'w' in params, "Missing the variable 'w'!"
@@ -347,14 +348,24 @@ def max_k_cut_rounding(V, params):
     else:
         assert 'C' in params, "Missing the variable 'C'!"
 
+    if params["calculate_purities"]:
+        assert 'gt' in params, "Missing the variable 'gt'!"
+
+
     N = V.shape[0]
     max_ene = 0
-    num_rounding_trials = max(100, np.floor_divide(V.shape[0], 2))
+    num_rounding_trials = max(1000, np.floor_divide(V.shape[0], 2))
 
     lb = np.zeros(N, dtype=int)
+    if params["calculate_purities"]:
+        pur = np.zeros(num_rounding_trials)
+
     for i in range(num_rounding_trials):
 
-        new_lb = nearest_neighbours(V, params["K"])
+        new_lb = nearest_neighbours(V, params["K"], post_processing=params['post_processing'])
+
+        if params["calculate_purities"]:
+            pur[i] += cu.purity(new_lb, params["gt"])
 
         if params["is_a_hypergraph_problem"]:
             ene = cu.energy_clustering_high_order(params["E"], params["w"], new_lb)
@@ -364,8 +375,11 @@ def max_k_cut_rounding(V, params):
         if ene > max_ene:
             lb = new_lb
             max_ene = ene
-            
-    return lb
+
+    if params["calculate_purities"]:
+        return lb, pur
+    else:
+        return lb
 
 
 def max_cut_rounding(V, params):
@@ -391,7 +405,7 @@ def max_cut_rounding(V, params):
 
     N = V.shape[0]
     max_ene = 0
-    num_rounding_trials = max(100, np.floor_divide(V.shape[0], 2))
+    num_rounding_trials = max(1000, np.floor_divide(V.shape[0], 2))
 
     lb = np.zeros(N, dtype=int)
     for i in range(num_rounding_trials):
@@ -414,7 +428,7 @@ def max_cut_rounding(V, params):
 
 
 # OTHER METHODS ========================================================================================================
-def nearest_neighbours(V, K, post_processing=False, max_tol=100):
+def nearest_neighbours(V, K, post_processing=True, max_tol=100):
     """
     Compute the K nearest neighbours rounding procedure to Max-K-Cut SDP problem
 

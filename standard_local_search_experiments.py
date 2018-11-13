@@ -1,17 +1,34 @@
+from __future__ import print_function
 import os
 import sys
 import time
-from numpy.core.multiarray import ndarray
 import numpy as np
 import sklearn.metrics.pairwise as skl
 
 import clustering_utils as cu
 import data_generation_tools as dg
 import data_visualization_tools as dv
+import moves
+
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 np.set_printoptions(linewidth=1000, precision=4, threshold=np.nan, suppress=True)
 import matplotlib.pyplot as plt
+
+def plot_matrix_lines(M, sigmas, Ks, title, dir_name):
+    plt.figure()
+    labels = []
+    for ns in range(len(sigmas)):
+        plt.plot(M[:, ns])
+        labels.append(r'$\sigma = %.2f$' % sigmas[ns])
+
+    plt.xticks(range(len(Ks)), Ks, fontsize=10)
+    plt.title(title, fontsize=14)
+    plt.xlabel('$K$')
+    plt.legend(labels, ncol=len(sigmas), mode="expand", loc=1)
+
+    plt.savefig(dir_name + '/' + title + '.png')
+    plt.show()
 
 
 def plot_line(title, vec, Ks, sigmas, filename):
@@ -29,9 +46,23 @@ def plot_line(title, vec, Ks, sigmas, filename):
     plt.show()
 
 
+def save_params(dirpath, n, Ks, sigmas, num_starts, num_max_trials, use_simplex):
+    f = open(str(dirpath) + '/params_data.dat', 'a')
+    f.write('param|value\n')
+    f.write('n|%d\n' % n)
+    f.write('num_starts|%d\n' % num_starts)
+    f.write('num_max_trials|%d\n' % num_max_trials)
+    f.write('use_simplex|%d\n' % use_simplex)
+    f.close()
+
+    np.savetxt(str(dirpath) + '/Ks.txt', Ks, fmt='%df')
+    np.savetxt(str(dirpath) + '/sigmas.txt', sigmas, fmt='%.3f')
+
 # MAIN CODE ============================================================================================================
 # noinspection PyStringFormat
-def run_test(n, k, sigma, num_trials, use_D31=False):
+def run_tests(n, k, sigma, num_starts, num_max_trials, use_simplex=True, use_D31=False):
+    assert k >= 2
+
     # Data generation and visualization --------------------------------------------------------------------------------
     if use_D31:
         P, ground_truth = dg.get_D31_data()
@@ -39,75 +70,97 @@ def run_test(n, k, sigma, num_trials, use_D31=False):
         N = P.shape[0]
     else:
         N = n * k
-        params = {'sigma_1': 1, 'sigma_2': sigma, 'min_dist': 0, 'K': k, 'dim_space': 2, 'l': 2,
+        params = {'sigma_1': 1, 'sigma_2': sigma, 'min_dist': 0, 'simplex': use_simplex, 'K': k, 'dim_space': 2, 'l': 2,
                   'n': n, 'use_prev_p': False, 'shuffle': False}
         P, ground_truth = dg.generate_data_random(params)
 
+    assert sigma < 1.0
+
     C = skl.pairwise_distances(P, metric='sqeuclidean')
 
-    # Other parameters -------------------------------------------------------------------------------------------------
-    ls_pur, ls_min_pur, ls_ene, ls_per, ls_tim, ls_ch, ls_si, ls_db, ls_du, ls_it = \
-        np.zeros(num_trials), np.zeros(num_trials), \
-        np.zeros(num_trials), np.zeros(num_trials), \
-        np.zeros(num_trials), np.zeros(num_trials), \
-        np.zeros(num_trials), np.zeros(num_trials), \
-        np.zeros(num_trials), np.zeros(num_trials)
-
+    num_it_to_max_ls, num_it_to_max_ab = np.zeros(num_starts), np.zeros(num_starts)
     # Iterate ----------------------------------------------------------------------------------------------------------
-    for t in range(num_trials):
-        lb_init = np.random.randint(0, k, N)
+    print(' ', end='')
+    for t in range(num_starts):
+        it_ls, pur = 0, 0.0
+        while pur < 1.0 and it_ls < num_max_trials:
+            lb_init = np.random.randint(0, k, N)
+            lb, _ = cu.local_search(C, k, lb_init, num_max_it=100)
 
-        start_t = time.time()
-        lb_ls, ls_it[t] = cu.local_search(C, k, lb_init, num_max_it=20)
-        ls_pur[t], ls_min_pur[t], ls_ene[t], ls_per[t], ls_ch[t], ls_si[t], ls_db[t], ls_du[t]\
-            = cu.stats_clustering_pairwise(C, lb_ls, ground_truth, P)
-        ls_tim[t] = time.time() - start_t
+            pur = cu.purity(lb, ground_truth, type="ave")
+            it_ls += 1
+            
+        it_ab, pur = 0, 0.0
+        while pur < 1.0 and it_ab < num_max_trials:
+            lb_init = np.random.randint(0, k, N)
+            lb, _ = moves.large_move_maxcut(C, k, lb_init, move_type="ab", num_max_it=100)
 
-    props = {"purities": ls_pur, "min_purities": ls_min_pur, "energies": ls_ene, "percentages_energy": ls_per,
-              "CH": ls_ch, "SI": ls_si,  "DB": ls_db, "DU": ls_du, "times": ls_tim, "iterations": ls_it}
+            pur = cu.purity(lb, ground_truth, type="ave")
+            it_ab += 1
 
-    return props
+        print('(ls: %d, ab: %d), ' % (it_ls, it_ab),  end='')
+        num_it_to_max_ls[t] = it_ls
+        num_it_to_max_ab[t] = it_ab
+    print('')
+    return np.mean(num_it_to_max_ls), np.mean(num_it_to_max_ab)
+
+
+def run_experiments(Ks, sigmas, n, num_starts, num_sample_datasets, num_max_trials,dir_name, use_simplex=True, title=''):
+    time_start = time.time()
+    n_it_to_max_ls, n_it_to_max_ab = np.zeros((len(Ks), len(sigmas))), np.zeros((len(Ks), len(sigmas)))
+    for ns in range(len(sigmas)):
+        for nk in range(len(Ks)):
+            nums_it_ls, nums_it_ab = np.zeros(num_sample_datasets), np.zeros(num_sample_datasets)
+
+            print('EXP - %s. (K = %d, s = %.2f) ======================================================'
+                  % (title, Ks[nk], sigmas[ns]))
+            for nd in range(num_sample_datasets):
+                print('Dataset %d of %d --------------------------------------------------------------'
+                      % (nd, num_sample_datasets))
+                nums_it_ls[nd], nums_it_ab[nd] = run_tests(n, Ks[nk], sigmas[ns], num_starts, num_max_trials)
+            print('')
+            n_it_to_max_ls[nk, ns] = np.mean(nums_it_ls)
+            n_it_to_max_ab[nk, ns] = np.mean(nums_it_ab)
+
+    experiment_id = 0
+    while os.path.exists(dir_name + '/' + str(experiment_id)):
+        experiment_id += 1
+    dirpath = dir_name + '/' + str(experiment_id)
+    os.makedirs(dirpath)
+
+    save_params(dirpath, n, Ks, sigmas, num_starts, num_max_trials, use_simplex)
+
+    np.savetxt(str(dirpath) + '/n_it_to_max_ls.txt', n_it_to_max_ls, fmt='%.3f')
+    np.savetxt(str(dirpath) + '/n_it_to_max_ab.txt', n_it_to_max_ab, fmt='%.3f')
+
+    plot_matrix_lines(n_it_to_max_ls, sigmas, Ks, 'Num. Iterations (Local Search, $n = %d$, num. experiments $ = %d$)'
+                      % (n, num_starts), dirpath)
+    plot_matrix_lines(n_it_to_max_ab, sigmas, Ks, 'Num. Iterations (AB Swaps, $n = %d$, num. experiments $ = %d$)'
+                      % (n, num_starts), dirpath)
+
+    print("Total time: %.4f s\n" % (time.time() - time_start))
+    print("SET FINISHED ========================================================================== \n")
 
 
 if __name__ == "__main__":
     random_init = True
 
-    # dir_name = 'find_failure'
-    dir_name = 'test_local_search/plots'
-    num_trials = 30
+    dir_name = 'test_local_search_fail_grid'
 
-    Ks = range(10, 20, 5)
-    num_K = len(Ks)
+    num_starts = 10
+    num_sample_datasets = 20
+    num_max_trials = 50
+    Ks = [9, 16, 25, 36, 49, 64]
+    sigmas = [0.15, 0.2, 0.3]
+
     n = 5
-    sigmas = [0.001, 0.002, 0.005]
-    time_start = time.time()
-    pur, min_pur, ene, CH, SI, DB, DU, per_ene = np.zeros((num_K, len(sigmas))), np.zeros((num_K, len(sigmas))), \
-                                                 np.zeros((num_K, len(sigmas))), np.zeros((num_K, len(sigmas))), \
-                                                 np.zeros((num_K, len(sigmas))), np.zeros((num_K, len(sigmas))), \
-                                                 np.zeros((num_K, len(sigmas))), np.zeros((num_K, len(sigmas)))
-    for ns in range(len(sigmas)):
-        for nk in range(num_K):
-            print('EXP. (%d, %d) ============================================================' % (nk, ns))
-            props = run_test(n, Ks[nk], sigmas[ns], num_trials)
-            print Ks[nk]
-            pur[nk, ns] = np.mean(props['purities'])
-            min_pur[nk, ns] = np.mean(props['min_purities'])
-            ene[nk, ns] = np.mean(props['energies'])
-            CH[nk, ns] = np.mean(props['CH'])
-            SI[nk, ns] = np.mean(props['SI'])
-            DB[nk, ns] = np.mean(props['DB'])
-            DU[nk, ns] = np.mean(props['DU'])
-            per_ene[nk, ns] = np.mean(props['percentages_energy'])
+    run_experiments(Ks, sigmas, n, num_starts, num_sample_datasets,
+                    num_max_trials, dir_name, use_simplex=False, title='1')
 
-    plot_line("Purity", pur, Ks, sigmas, dir_name + "pur")
-    plot_line("Min Purity", min_pur, Ks, sigmas, dir_name + "min_pur")
-    plot_line("SI", SI, Ks, sigmas, dir_name + "SI")
-    plot_line("CH", CH, Ks, sigmas, dir_name + "CH")
-    plot_line("DB", DB, Ks, sigmas, dir_name + "DB")
-    plot_line("DU", DU, Ks, sigmas, dir_name + "DU")
+    n = 10
+    run_experiments(Ks, sigmas, n, num_starts, num_sample_datasets,
+                    num_max_trials, dir_name, use_simplex=False, title='2')
 
-    print("Total time: %.4f s\n" % (time.time() - time_start))
-
-    print("SET FINISHED ========================================================================== \n")
-
-
+    n = 20
+    run_experiments(Ks, sigmas, n, num_starts, num_sample_datasets,
+                    num_max_trials, dir_name, use_simplex=False, title='3')
