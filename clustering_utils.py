@@ -208,7 +208,7 @@ def DU(P, lb):
 
 
 # CLUSTERING METHODS USING SDP SOLVERS =================================================================================
-def iterate_sdp(C, K, num_max_it=50):
+def iterate_sdp(C, K, num_max_it=50, alpha=0):
     """
     Iterate SDP clustering
 
@@ -222,10 +222,10 @@ def iterate_sdp(C, K, num_max_it=50):
     """
     X = np.ones_like(C)
     err, num_it_SDP, total_elapsed_time = np.inf, 0, 0
-    while num_it_SDP < num_max_it and err > 1e-8:
+    while num_it_SDP < num_max_it and err > 1e-6:
         X_int = np.copy(X)
 
-        X, _, elapsed_time, _ = solvers.maxkcut_admm_solver(C, K, num_max_it=700)
+        X, _, elapsed_time, _ = solvers.maxkcut_admm_solver(C, K, num_max_it=num_max_it, alpha=alpha)
         C = 1 - X
 
         total_elapsed_time += elapsed_time
@@ -338,7 +338,7 @@ def local_search(C, K, lb_init, num_max_it=1000):
     #         lb[i] = min_cost(C, K, lb, i)
     #     err = np.linalg.norm(lb - lb_prev)
 
-    return lb, it
+    return lb, it, err
 
 
 # OTHER FUNCTIONS ======================================================================================================

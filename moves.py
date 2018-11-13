@@ -59,7 +59,7 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
         it += 1
         err = max_ene - past_ene  # could make percent change
 
-    return lb, it
+    return lb, it, err
 
 
 def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=100, use_IPM=False):
