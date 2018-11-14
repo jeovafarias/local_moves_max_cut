@@ -28,6 +28,19 @@ def stats_clustering_pairwise(C, lb, gt, P=None, use_other_measures=False):
         return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
                energy_clustering_pairwise(C, lb), percentage_energy_clustering_pairwise(C, lb)
 
+def stats_clustering_triples(C, lb, gt):
+    """
+    Compute the purity, the min purity, the clustering energy and the energy percentage of a partition (clustering)
+
+    :param C: (3d array[float], NxNxN) - Triple weights
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :param gt: (1d array[integer]) - Ground Truth labeling
+    :return: Purity, Min purity, Energy, Percent of total energy
+    """
+    return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
+           energy_clustering_triples(C, lb), percentage_energy_clustering_triples(C, lb)
+
+
 
 def stats_clustering_high_order(E, w, lb, gt):
     """
@@ -37,12 +50,7 @@ def stats_clustering_high_order(E, w, lb, gt):
     :param w: (1d array[float], |E|) - Hypergraph weights
     :param lb: (1d array[integer]) - Labeling to be assessed
     :param gt: (1d array[integer]) - Ground Truth labeling
-    :return: (float) - purity,
-             (float) - clustering energy,
-             (float) - CH index,
-             (float) - Silhouette,
-             (float) - DB index,
-             (float) - DU index
+    :return: Purity, Min purity, Energy, Percent of total energy
     """
     return purity(lb, gt, type="ave"), purity(lb, gt, type="min"), \
            energy_clustering_high_order(E, w, lb), percentage_energy_clustering_high_order(E, w, lb)
@@ -62,6 +70,22 @@ def energy_clustering_pairwise(C, lb):
         for j in range(C.shape[0]):
             if lb[i] != lb[j]:
                 ene += C[i, j]
+    return ene
+
+def energy_clustering_triples(C, lb):
+    """
+    Compute clustering energy in triples clustering, i.e. the sum of edges cut from the hypergraph
+
+    :param C: (2d array[float], NxN) - Weight matrix from the data (N points)
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :return: (float) - clustering energy
+    """
+    ene = 0
+    for i in range(C.shape[0]):
+        for j in range(C.shape[0]):
+            for k in range(C.shape[0]):
+                if (lb[i] != lb[j]) or (lb[i] != lb[k]):
+                    ene += C[i, j, k]
     return ene
 
 
@@ -87,19 +111,29 @@ def percentage_energy_clustering_pairwise(C, lb):
     """
     Compute energy percentage for pairwise clustering
 
-    :param E: (List of list of Integers) - Hypergraph vertices
-    :param w: (1d array[float], |E|) - Hypergraph weights
+    :param C: (2d array[float], NxN) - Weight matrix from the data (N points)
     :param lb: (1d array[integer]) - Labeling to be assessed
     :return: (float) - energy percentage
     """
     return energy_clustering_pairwise(C, lb) / np.sum(C)
+
+def percentage_energy_clustering_triples(C, lb):
+    """
+    Compute energy percentage for triples clustering
+
+    :param C: (3d array[float], NxN) - Weight matrix from the data (N points)
+    :param lb: (1d array[integer]) - Labeling to be assessed
+    :return: (float) - energy percentage
+    """
+    return energy_clustering_triples(C, lb) / np.sum(C)
 
 
 def percentage_energy_clustering_high_order(E, w, lb):
     """
     Compute energy percentage for hypergraph clustering
 
-    :param C: (2d array[float], NxN) - Weight matrix from the data (N points)
+    :param E: (List of list of Integers) - Hypergraph vertices
+    :param w: (1d array[float], |E|) - Hypergraph weights
     :param lb: (1d array[integer]) - Labeling to be assessed
     :return: (float) - energy percentage
     """
@@ -321,24 +355,87 @@ def local_search(C, K, lb_init, num_max_it=1000):
 
     lb = np.copy(lb_init)
     it, max_ene, err = 1, 0, np.inf
-    while err > 1e-10 and it < num_max_it:
-        lb_prev = np.copy(lb)
+    while err > 1e-5 and it < num_max_it:
+        prev_ene = max_ene
         for i in range(len(lb_init)):
             lb[i] = min_cost(C, K, lb, i)
-        err = np.linalg.norm(lb - lb_prev)
+        max_ene = energy_clustering_pairwise(C,lb)
+        err = max_ene-prev_ene
         it += 1
 
-
-    # err, it = np.inf, 1
-    # lb = lb_init
-    # while err > 1e-10 and it < num_max_it:
-    #     lb_prev = np.copy(lb)
-    #     it += 1
-    #     for i in range(len(lb_init)):
-    #         lb[i] = min_cost(C, K, lb, i)
-    #     err = np.linalg.norm(lb - lb_prev)
-
     return lb, it, err
+
+
+def local_search_triples(C,K,lb_init,num_max_it=1000):
+    """
+    Simple local search algorithm which iteratively finds the best cluster
+    for each point but adapated for triple hyperedges
+    
+    Args:
+        C (3d array[float], NxN): weight of triple hyperedges
+        k (int): number of clusters
+        lb_init (array of int): clustering labels for each v in V
+        num_max_it (int): maximum number of iterations run
+    Returns:
+        lb (1d array[integer]) - Final labeling
+    """
+    
+    def min_cost(C, K, cl, i):
+        costs = [0 for _ in range(K)]
+        for k in range(K):
+            k_ind = np.nonzero(cl == k)[0]
+            for x in range(len(k_ind)):
+                for y in range(x,len(k_ind)):
+                    costs[k] += C[i,k_ind[x],k_ind[y]]
+        return np.argmin(costs)
+
+    lb = np.copy(lb_init)
+    it, max_ene, err = 1, 0, np.inf
+    while err > 1e-5 and it < num_max_it:
+        prev_ene = max_ene
+        for i in range(len(lb_init)):
+            lb[i] = min_cost(C, K, lb, i)
+        max_ene = energy_clustering_triples(C,lb)
+        err = max_ene - prev_ene
+        it += 1
+    return lb, it, err
+
+##def local_search_high_order(E,w,k,origLabels,maxIt=1000):
+##    """
+##    Simple local search algorithm which iteratively finds the best cluster
+##    for each point but adapated for hyperedges
+##    
+##    Args:
+##        E (list of list of int): list of hyperedges
+##        w (list of float): corresponding weights of edges in E
+##        k (int): number of clusters
+##        origLabels (array of int): clustering labels for each v in V
+##        maxIt (int): maximum number of iterations run
+##    Returns:
+##        labels (array of int): updated clustering labels for each v in V
+##    """
+##    
+##    labels = np.copy(origLabels)
+##    it, maxEne = 0, energy_clustering_high_order(E,w,labels)
+##    updated = True
+##    while updated and it <= maxIt:
+##        #print(it)
+##        updated = False
+##        for v in range(len(labels)):
+##            #print("Updating (%d), Current Class.: %s" % (v, labels))
+##            for i in range(k):
+##                label0 = labels[v]
+##                labels[v] = i
+##                ene = energy_clustering_high_order(E,w,labels)
+##                if ene > maxEne:
+##                    updated = True
+##                    maxEne = ene
+##                else:
+##                    labels[v] = label0
+##        it += 1
+##
+##
+##    return labels, it
 
 
 # OTHER FUNCTIONS ======================================================================================================
