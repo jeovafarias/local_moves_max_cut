@@ -14,109 +14,83 @@ import sdp_solvers as solvers
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 np.set_printoptions(linewidth=1000, precision=4, threshold=np.nan, suppress=True)
-import matplotlib.pyplot as plt
-
-num_stats = 4
-name_stats = ['pur', 'min_pur', 'ene_per', 'tim']
 
 
-def get_num_stats():
-    return num_stats
+def entry_exists(id, method, num_starts=None):
+    endname = '' if num_starts is None else '_' + str(num_starts) + 'starts'
+    filename = dir_name + '/' + method.__name__ + endname + ".csv"
+    if not os.path.exists(filename):
+        create_header(filename, num_starts)
+        return False
+    else:
+        with open(filename, "rb") as f:
+            M = np.loadtxt(f, delimiter=",", skiprows=1)
+        return id in M[:, 0] if M.ndim > 1 else id == M[0]
 
 
-def create_stats_vector(tim, labeling, ground_truth, P, C):
-    pur, min_pur, ene, ene_per \
-        = cu.stats_clustering_pairwise(C, labeling, ground_truth, P, use_other_measures=False)
-    stats = np.array([pur, min_pur, ene_per, tim])
-    return stats
+def create_header(filename, num_starts=None):
+    if num_starts is None:
+        with open(filename, 'a') as f:
+            f.write('id, n, k, gt_energy, energy, purity, time \n')
+    else:
+        with open(filename, 'a') as f:
+            f.write('id, n, k, gt_energy, mean_energy, max_energy, mean_purity, pur_at_max_ene, mean_time \n')
 
 
-def it_sdp(P, C, k, ground_truth):
-    itsdp_X, tim, _, _ = cu.iterate_sdp(C, k)
-    dv.plot_matrix(itsdp_X)
+def save_line(id, k, n, gt_energy, method, stats, num_starts=None):
+    endname = '' if num_starts is None else '_' + str(num_starts) + 'starts'
+    filename = dir_name + '/' + method.__name__ + endname + ".csv"
+
+    if not os.path.exists(filename):
+        create_header(filename, num_starts)
+
+    with open(filename, 'a') as f:
+        f.write('%d' % id + ',' + '%d' % n + ',' + '%d' % k + ',' + '%.4f' % gt_energy + ',')
+        for s in range(len(stats) - 1):
+            f.write('%.4f' % stats[s] + ',')
+        f.write('%.4f' % stats[-1] + '\n')
+
+
+def it_sdp(P, C, k):
+    itsdp_X, _, _, err = cu.iterate_sdp(C, k, alpha=0)
     itsdp_labeling = cu.cluster_integer_sol(itsdp_X, k)
-    return create_stats_vector(tim, itsdp_labeling, ground_truth, P, C)
+    return itsdp_labeling, err
 
 
-def sdp(P, C, k, ground_truth):
-    sdp_X, _, tim, _ = solvers.maxkcut_admm_solver(C, k)
+def sdp_std_rounding(P, C, k):
+    sdp_X, err, _, _ = solvers.maxkcut_admm_solver(C, k)
     V = np.linalg.cholesky(sdp_X + 1e-9 * np.trace(sdp_X) * np.eye(sdp_X.shape[0]))
-    sdp_labeling = solvers.max_k_cut_rounding(V, {'is_a_hypergraph_problem': False, 'C': C, 'K': k})
-    return create_stats_vector(tim, sdp_labeling, ground_truth, P, C)
+    sdp_labeling = solvers.max_k_cut_rounding(V, {'is_a_hypergraph_problem': False, 'C': C, 'K': k,
+                                                  'post_processing': False})
+    return sdp_labeling, err
 
 
-def ls(P, C, k, ground_truth, lb_init):
-    start_t = time.time()
-    ls_labeling, _ = cu.local_search(C, k, lb_init)
-    tim = time.time() - start_t
-    return create_stats_vector(tim, ls_labeling, ground_truth, P, C)
+def sdp_new_rounding(P, C, k):
+    sdp_X, err, _, _ = solvers.maxkcut_admm_solver(C, k)
+    V = np.linalg.cholesky(sdp_X + 1e-9 * np.trace(sdp_X) * np.eye(sdp_X.shape[0]))
+    sdp_labeling = solvers.max_k_cut_rounding(V, {'is_a_hypergraph_problem': False, 'C': C, 'K': k,
+                                                  'post_processing': True})
+    return sdp_labeling, err
 
 
-def ab(P, C, k, ground_truth, lb_init):
-    start_t = time.time()
-    ab_labeling, _ = moves.large_move_maxcut(C, k, lb_init, move_type="ab")
-    tim = time.time() - start_t
-    return create_stats_vector(tim, ab_labeling, ground_truth, P, C)
+def km(P, C, k):
+    km_labeling = kmeans(n_clusters=k, init='random', n_init=1000).fit(P).labels_
+    return km_labeling, -1
 
 
-def km(P, C, k, ground_truth):
-    start_t = time.time()
-    km_labeling = kmeans(n_clusters=k, init='random', n_init=1).fit(P).labels_
-    tim = time.time() - start_t
-    return create_stats_vector(tim, km_labeling, ground_truth, P, C)
+def kmpp(P, C, k):
+    kmpp_labeling = kmeans(n_clusters=k, init='k-means++', n_init=1000).fit(P).labels_
+    return kmpp_labeling, -1
 
 
-def kmpp(P, C, k, ground_truth):
-    start_t = time.time()
-    kmpp_labeling = kmeans(n_clusters=k, init='k-means++').fit(P).labels_
-    tim = time.time() - start_t
-    return create_stats_vector(tim, kmpp_labeling, ground_truth, P, C)
+def ls(P, C, k, lb_init):
+    ls_labeling, _, _ = cu.local_search(C, k, lb_init)
+    return ls_labeling
 
 
-def plot_matrix_lines(M, vec, Ks, title, dir_name):
-    plt.figure()
-    labels = []
-    for ns in range(len(vec)):
-        plt.plot(M[:, ns])
-        if callable(vec[ns]):  # Only works in Python 2.x or Python 3.2+
-            labels.append(r'%s' % vec[ns].__name__)
-        else:
-            labels.append(r'%s' % vec[ns])
-
-    plt.xticks(range(len(Ks)), Ks, fontsize=10)
-    plt.title(title, fontsize=14)
-    plt.xlabel('$K$')
-    plt.legend(labels, ncol=len(vec), mode="expand")
-
-    plt.savefig(dir_name + '/' + title + '.png')
-    plt.show()
-
-
-def plot_line(title, vec, Ks, sigmas, filename):
-    num_K = len(vec)
-
-    fig, ax = plt.subplots()
-    lines = ax.plot(range(num_K), vec, lw=1)
-    plt.yticks(np.linspace(0, np.max(vec), 11))
-    plt.xticks(range(num_K), Ks, fontsize=14)
-    leg = ax.legend(lines, sigmas, ncol=3, title="Sigma")
-    plt.savefig(filename + '.png', bbox_inches="tight")
-    plt.title(title)
-    plt.xlabel("K")
-
-    plt.show()
-
-
-def save_params(dirpath, n, Ks, sigmas, num_starts, use_simplex):
-    f = open(str(dirpath) + '/params_data.dat', 'a')
-    f.write('param|value\n')
-    f.write('n|%d\n' % n)
-    f.write('num_starts|%d\n' % num_starts)
-    f.write('use_simplex|%d\n' % use_simplex)
-    f.close()
-
-    np.savetxt(str(dirpath) + '/Ks.txt', Ks, fmt='%df')
-    np.savetxt(str(dirpath) + '/sigmas.txt', sigmas, fmt='%.3f')
+def ab(P, C, k, lb_init):
+    ab_labeling, _, err = moves.large_move_maxcut(C, k, lb_init, move_type="ab")
+    return ab_labeling
 
 
 def sample_clusters(P, gt, K, new_k):
@@ -136,114 +110,82 @@ def sample_clusters(P, gt, K, new_k):
 
     return new_P, new_gt, new_k
 
+
 # MAIN CODE ============================================================================================================
 # noinspection PyStringFormat
-def run_tests(n, k, sigma, non_it_methods, it_methods, num_starts, use_simplex=False, use_D31=False):
-    assert k >= 2
+def run_experiments(dir_instances, non_it_methods, num_starts, it_methods, dir_name):
 
-    # Data generation and visualization --------------------------------------------------------------------------------
-    if use_D31:
-        P, ground_truth = dg.get_D31_data()
-        k = len(np.unique(ground_truth))
-    else:
-        params = {'sigma_1': 1, 'sigma_2': sigma, 'min_dist': 0, 'simplex': use_simplex, 'K': k, 'dim_space': 2, 'l': 2,
-                  'n': n, 'use_prev_p': False, 'shuffle': True}
-        P, ground_truth = dg.generate_data_random(params)
-
-        per = 0.5
-        new_k = int(np.floor(per * k))
-        P, ground_truth, k = sample_clusters(P, ground_truth, k, new_k)
-        dv.plot_data(P, k, ground_truth, 2)
-
-    assert sigma < 1.0
-
-    N = P.shape[0]
-    C = skl.pairwise_distances(P, metric='sqeuclidean')
-    num_stats = get_num_stats()   # [pur, min_pur, tim]
-    returns = np.zeros((0, num_stats))
-    print('(', end='')
-    for i in range(len(non_it_methods)):
-        stats = non_it_methods[i](P, C, k, ground_truth)
-        returns = np.concatenate((returns, np.expand_dims(stats, axis=0)), axis=0)
-        print('%s: %.3f, ' % (non_it_methods[i].__name__, stats[0]), end='')
-    print('\b\b) ', end='')
-
-    stats = np.zeros((len(it_methods), num_stats, num_starts))
-    print(' ', end='')
-    for t in range(num_starts):
-        lb_init = np.random.randint(0, k, N)
-        print('(', end='')
-        for i in range(len(it_methods)):
-            stats[i, :, t] = it_methods[i](P, C, k, ground_truth, lb_init)
-            print('%s: %.3f, ' % (it_methods[i].__name__, stats[0, i, t]), end='')
-        print('\b\b) ', end='')
-
-    returns = np.concatenate((returns, np.mean(stats, axis=2)), axis=0)
-    print('')
-    return returns
-
-
-def run_experiments(n, Ks, sigmas, non_it_methods, it_methods, num_starts, num_datasets, dir_name, use_simplex=False,
-                    title=''):
     time_start = time.time()
-    num_stats = get_num_stats()   # [pur, min_pur, tim]
-    methods = np.concatenate((non_it_methods, it_methods))
 
-    stats_matrix = np.zeros((len(Ks), len(sigmas), len(methods), num_stats))
-    for ns in range(len(sigmas)):
-        for nk in range(len(Ks)):
-            stats = np.zeros((len(methods), num_stats, num_datasets))
-            print('EXP - %s. (K = %d, s = %.2f) ======================================================'
-                  % (title, Ks[nk], sigmas[ns]))
-            for nd in range(num_datasets):
-                print('Dataset %d of %d --------------------------------------------------------------'
-                      % (nd, num_datasets))
-                returns = run_tests(n, Ks[nk], sigmas[ns], non_it_methods, it_methods, num_starts)
-                stats[:, :, nd] = returns
-            print('')
+    instances = np.loadtxt(dir_instances + '/index.txt', delimiter=',')
+    ids, ns, Ks = instances[:, 0].astype(int), instances[:, 1].astype(int), instances[:, 2].astype(int)
 
-            stats_matrix[nk, ns, :, :] = np.mean(stats, axis=2)
+    for id_idx in range(len(ids)):
 
-    experiment_id = 0
-    while os.path.exists(dir_name + '/' + str(experiment_id)):
-        experiment_id += 1
-    dirpath = dir_name + '/' + str(experiment_id)
-    os.makedirs(dirpath)
+        print("Instance %d of %d" % (ids[id_idx], len(ids)))
 
-    save_params(dirpath, n, Ks, sigmas, num_starts, use_simplex)
-    np.save(str(dirpath) + '/stats_matrix', stats_matrix)
+        P = np.loadtxt(dir_instances + '/' + str(ids[id_idx]) + '/P.dat', dtype=float)
+        ground_truth = np.loadtxt(dir_instances + '/' + str(ids[id_idx]) + '/gt.dat').astype(int)
+        C = skl.pairwise_distances(P, metric='sqeuclidean')
+        gt_energy = cu.energy_clustering_pairwise(C, ground_truth)
 
-    for method in range(len(methods)):
-        for stat in range(num_stats):
-            plot_matrix_lines(stats_matrix[:, :, method, stat], sigmas, Ks,
-                              '%s ($n = %d$, n data sets$ = %d$, \n n. starts per data set$ = %d$, method = $%s$)'
-                              % (np.char.upper(name_stats[stat]), n, num_starts, num_sample_datasets, np.char.upper(methods[method].__name__)), dirpath)
+        dv.plot_data(P, Ks[id_idx], ground_truth, 2)
 
-    for sigma in range(len(sigmas)):
-        for stat in range(num_stats):
-            plot_matrix_lines(stats_matrix[:, sigma, :, stat], methods, Ks,
-                              '%s ($n = %d$, n data sets$ = %d$, \n n. starts per data set$ = %d$, sigma = $%.3f$)'
-                              % (np.char.upper(name_stats[stat]), n, num_starts, num_sample_datasets, sigmas[sigma]), dirpath)
+        print('(', end='')
+        for method_idx in range(len(non_it_methods)):
+            if entry_exists(ids[id_idx], non_it_methods[method_idx]):
+               continue
 
-    print("Total time: %.4f s\n" % (time.time() - time_start))
+            start_t = time.time()
+            labeling, err = non_it_methods[method_idx](P, C, Ks[id_idx])
+            tim = time.time() - start_t
+
+            purity, _, energy, _ = cu.stats_clustering_pairwise(C, labeling, ground_truth)
+
+            stats = [energy, purity, tim]
+            save_line(ids[id_idx], Ks[id_idx], ns[id_idx], gt_energy, non_it_methods[method_idx], stats)
+
+            print('%s: %.3f, err: %.1e | ' % (non_it_methods[method_idx].__name__, purity, err), end='')
+        print(') ', end='')
+
+        print('(', end='')
+        for method_idx in range(len(it_methods)):
+            if entry_exists(ids[id_idx], it_methods[method_idx], num_starts=num_starts):
+               continue
+
+            energies, purities, times = np.zeros(num_starts), np.zeros(num_starts), np.zeros(num_starts)
+            for t in range(num_starts):
+                lb_init = np.random.randint(0, Ks[id_idx], P.shape[0])
+
+                start_t = time.time()
+                labeling = it_methods[method_idx](P, C, Ks[id_idx], lb_init)
+                times[t] = time.time() - start_t
+
+                purities[t], _, energies[t], _ = cu.stats_clustering_pairwise(C, labeling, ground_truth)
+
+            stats = [np.mean(energies), np.max(energies), np.mean(purities), purities[np.argmax(energies)], np.mean(times)]
+            save_line(ids[id_idx], Ks[id_idx], ns[id_idx], gt_energy, it_methods[method_idx], stats, num_starts=num_starts)
+
+            print('%s: %.3f | ' % (it_methods[method_idx].__name__, np.mean(purities)), end='')
+
+        print(')')
+
+    print("\nTotal time: %.4f s" % (time.time() - time_start))
     print("SET FINISHED ========================================================================== \n")
-    print(stats_matrix)
 
 
 if __name__ == "__main__":
 
-    dir_name = 'comp_LS_AB_KM_results'
+    dir_name = 'comp_all_results'
+    dir_instances = 'clustering_instances'
 
-    num_starts = 1
-    num_sample_datasets = 1
-    Ks = [9, 16, 25, 36]
-    sigmas = [0.3, 0.4]
-    non_it_methods = [it_sdp]  # [sdp, it_sdp, km, kmpp]
-    it_methods = []  # [ab, ls]
+    assert os.path.exists(dir_instances)
 
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
 
-    n = 5
-    run_experiments(n, Ks, sigmas, non_it_methods, it_methods, num_starts, num_sample_datasets, dir_name, use_simplex=False, title='2')
-    #
-    # n = 20
-    # run_experiments(n, Ks, sigmas, num_starts, num_sample_datasets, dir_name, use_simplex=False, title='3')
+    num_starts = 10
+    non_it_methods = [sdp_std_rounding, sdp_new_rounding, it_sdp, km, kmpp]
+    it_methods = [ls]
+
+    run_experiments(dir_instances, non_it_methods, num_starts, it_methods, dir_name)
