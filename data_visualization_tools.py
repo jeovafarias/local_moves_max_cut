@@ -29,6 +29,7 @@ def plot_data(P, K, cl, l,
             ax = fig.add_subplot(111, projection='3d')
             for i in range(K):
                 P_aux = P[np.nonzero(cl == i)[0], :]
+                print(P_aux.shape)
                 s = ax.scatter(P_aux[:, 0], P_aux[:, 1], P_aux[:, 2], c=colors[i], label=str(i))
                 s.set_edgecolors = s.set_facecolors = lambda *args: None
                 ax = plt.gca()

@@ -362,6 +362,7 @@ def localSearch(V,E,w,k,origLabels,maxIt=1000):
     it, maxEne = 0, energy(V,E,w,labels)
     updated = True
     while updated and it <= maxIt:
+        print(it)
         updated = False
         for v in V:
             #print("Updating (%d), Current Class.: %s" % (v, labels))
