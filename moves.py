@@ -61,12 +61,11 @@ def large_move_maxcut(C, K, lb_init, move_type="ab", ab_sequence=None, num_max_i
 
     return lb, it, err
 
-def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=100, use_reduction=False):
+def large_move_maxcut_triples(C, K, lb_init, ab_sequence=None, num_max_it=100, use_reduction=False):
     """
     Approximately solve the Max-K-HyperCut problem represented by (E.w) using a large move local search
-
-    :param E: (list of list of int) - List of hyperedges (subsets of V)
-    :param w: (list of float) - Corresponding weights of hyperedges in E
+    
+    :param C: (3d array[float], NxNxN) - Weight matrix calculated from N data-points that represents the graph to be partitioned
     :param K: (integer) - Number of desired partitions
     :param lb_init: (1d array[integer]) - Initial labeling (partition)
     :param ab_sequence: (2d array[integer], 2xK) - Sequence of alpha labels and beta labels during the iterations
@@ -90,8 +89,8 @@ def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=
         for alpha in alpha_sequence:
             for beta in range(alpha + 1, K):  # should update for beta sequence
                 if alpha != beta:
-                    new_lb = abswap_sdp_high_order(E, w, np.copy(lb), alpha, beta, use_reduction)
-                    ene = cu.energy_clustering_high_order(E, w, new_lb)
+                    new_lb = abswap_sdp_triples(C, np.copy(lb), alpha, beta, use_reduction)
+                    ene = cu.energy_clustering_triples(C, new_lb)
                     if ene > max_ene:
                         max_ene = ene
                         lb = new_lb
@@ -99,13 +98,53 @@ def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=
         it += 1
         err = max_ene - past_ene  # could make percent change
 
-    return lb, it
+    return lb, it, err
+
+##def large_move_maxcut_high_order(E, w, K, lb_init, ab_sequence=None, num_max_it=100, use_reduction=False):
+##    """
+##    Approximately solve the Max-K-HyperCut problem represented by (E.w) using a large move local search
+##
+##    :param E: (list of list of int) - List of hyperedges (subsets of V)
+##    :param w: (list of float) - Corresponding weights of hyperedges in E
+##    :param K: (integer) - Number of desired partitions
+##    :param lb_init: (1d array[integer]) - Initial labeling (partition)
+##    :param ab_sequence: (2d array[integer], 2xK) - Sequence of alpha labels and beta labels during the iterations
+##    :param num_max_it: (integer) - Maximum number of iterations
+##    :param use_reduction: (boolean) - Use reduction from l=3 to l=2 before calling SDP
+##    :return: (1d array[integer]) - Approximate final labeling (partitioning)
+##    """
+##    if ab_sequence is None:
+##        alpha_sequence = range(K)
+##        beta_sequence = range(K)
+##    else:
+##        alpha_sequence = ab_sequence[0]
+##        beta_sequence = [-1]
+##
+##    lb = np.copy(lb_init)
+##
+##    # Iterate moves ----------------------------------------------------------------------------------------------------
+##    it, max_ene, err = 1, 0, np.inf
+##    while err > 1e-5 and it < num_max_it:
+##        past_ene = max_ene
+##        for alpha in alpha_sequence:
+##            for beta in range(alpha + 1, K):  # should update for beta sequence
+##                if alpha != beta:
+##                    new_lb = abswap_sdp_high_order(E, w, np.copy(lb), alpha, beta, use_reduction)
+##                    ene = cu.energy_clustering_high_order(E, w, new_lb)
+##                    if ene > max_ene:
+##                        max_ene = ene
+##                        lb = new_lb
+##
+##        it += 1
+##        err = max_ene - past_ene  # could make percent change
+##
+##    return lb, it, err
 
 
 def abswap_sdp(C_initial, lb, alpha, beta, use_IPM=False):
     """
     Executes an alpha-beta swap step
-    :param C_initial: (2d array[float], NxN) - initial weight matrix computed from all initial data
+    :param C_initial: (3d array[float], NxNxN) - initial weight matrix computed from all initial data
     :param lb: (1d array[integer]) - Current labeling
     :param alpha & beta: (integers) Labels to be swapped
     :param use_IPM: (boolean) - Use Interior Point Method to solve the SDP problem
@@ -130,12 +169,11 @@ def abswap_sdp(C_initial, lb, alpha, beta, use_IPM=False):
     lb[ab_indices] = alpha * (int_sol > 0).astype(int) + beta * (int_sol < 0).astype(int)
     return lb
 
-def abswap_sdp_high_order(EOrig, wOrig, lb, alpha, beta, use_reduction=False):
+def abswap_sdp_triples(C_init, lb, alpha, beta, use_reduction=False):
     """
     Executes an alpha-beta swap step for hyperedges
-
-    :param EOrig: (list of list of int) - Full list of hyperedges (subsets of V)
-    :param wOrig: (list of float) - Corresponding weights of hyperedges in EOrig
+    
+    :param C_init: (3d array[float], NxNxN) - initial weight matrix computed from all initial data
     :param lb: (1d array[integer]) - Current labeling
     :param alpha & beta: (integers) Labels to be swapped
     :param use_IPM: (boolean) - Use Interior Point Method to solve the SDP problem
@@ -143,36 +181,82 @@ def abswap_sdp_high_order(EOrig, wOrig, lb, alpha, beta, use_reduction=False):
     """
     # Find subproblem --------------------------------------------------------------------------------------------------
     n = len(lb)
-    ab_indices = []
-    index_dict = dict()
-    for i in range(n):
-        if (lb[i] == alpha) or (lb[i] == beta):
-            ab_indices.append(i)
-            index_dict[i] = len(ab_indices)-1
-
-    E, w = [], []
-    for j in range(len(EOrig)):
-        e, vol = EOrig[j], wOrig[j]
-        all_in = True
-        for i in e:
-            if (lb[i] != alpha) and (lb[i] != beta):
-                all_in = False
-        if all_in:
-            E.append([index_dict[i] for i in e])
-            w.append(vol)
+    ab_indices = np.nonzero((lb == alpha) | (lb == beta))[0]
+    
+    C = C_init[np.ix_(ab_indices, ab_indices, ab_indices)]
+    n_sub = len(ab_indices)
                     
     # Solve & round ----------------------------------------------------------------------------------------------------
     if use_reduction:
-        n_sub = len(ab_indices)
-        C = cu.sdp_reduction(n_sub,E,w)
-        int_sol = solvers.solve_round_sdp(C, use_IPM=False)
+        C_red = np.zeros(shape=(n_sub,n_sub))
+        for i in range(n_sub):
+            for j in range(n_sub):
+                for k in range(n_sub):
+                    vol = C[i,j,k]/2.
+                    C_red[i,j] += vol
+                    C_red[j,i] += vol
+                    C_red[i,k] += vol
+                    C_red[k,i] += vol
+                    C_red[j,k] += vol
+                    C_red[k,j] += vol
+        int_sol = solvers.solve_round_sdp(C_red, use_IPM=False)
         lb[ab_indices] = alpha * (int_sol > 0) + beta * (int_sol < 0)
     else:
+        E, w = [],[]
+        for i in range(n_sub):
+            for j in range(n_sub):
+                for k in range(n_sub):
+                    E.append([i,j,k])
+                    w.append(C[i,j,k])
         int_sol = solvers.solve_round_hypergraph_sdp(E, w, 2, len(ab_indices), 3)
         lb[ab_indices] = alpha * (int_sol > 0) + beta * (int_sol == 0)
     #except Exception:
     #    return lb
     return lb
+
+##def abswap_sdp_high_order(EOrig, wOrig, lb, alpha, beta, use_reduction=False):
+##    """
+##    Executes an alpha-beta swap step for hyperedges
+##
+##    :param EOrig: (list of list of int) - Full list of hyperedges (subsets of V)
+##    :param wOrig: (list of float) - Corresponding weights of hyperedges in EOrig
+##    :param lb: (1d array[integer]) - Current labeling
+##    :param alpha & beta: (integers) Labels to be swapped
+##    :param use_IPM: (boolean) - Use Interior Point Method to solve the SDP problem
+##    :return: (1d array[integer]) - New labeling with alpha and beta swapped
+##    """
+##    # Find subproblem --------------------------------------------------------------------------------------------------
+##    n = len(lb)
+##    ab_indices = []
+##    index_dict = dict()
+##    for i in range(n):
+##        if (lb[i] == alpha) or (lb[i] == beta):
+##            ab_indices.append(i)
+##            index_dict[i] = len(ab_indices)-1
+##
+##    E, w = [], []
+##    for j in range(len(EOrig)):
+##        e, vol = EOrig[j], wOrig[j]
+##        all_in = True
+##        for i in e:
+##            if (lb[i] != alpha) and (lb[i] != beta):
+##                all_in = False
+##        if all_in:
+##            E.append([index_dict[i] for i in e])
+##            w.append(vol)
+##                    
+##    # Solve & round ----------------------------------------------------------------------------------------------------
+##    if use_reduction:
+##        n_sub = len(ab_indices)
+##        C = cu.sdp_reduction(n_sub,E,w)
+##        int_sol = solvers.solve_round_sdp(C, use_IPM=False)
+##        lb[ab_indices] = alpha * (int_sol > 0) + beta * (int_sol < 0)
+##    else:
+##        int_sol = solvers.solve_round_hypergraph_sdp(E, w, 2, len(ab_indices), 3)
+##        lb[ab_indices] = alpha * (int_sol > 0) + beta * (int_sol == 0)
+##    #except Exception:
+##    #    return lb
+##    return lb
 
 
 def aexp_sdp(C_initial, lb, alpha, use_IPM=False):
